@@ -8,9 +8,13 @@ Effect:             The SubwayTraffic Platform system conductor for system
 """
 
 import util
+from errors.HTTPcode import STPHTTPException
 
 def get_version():
     root_path = util.get_root_path()
     url = root_path + "/conf/stp.version"
-    version = open(url).read()
+    try:
+        version = open(url, "r").read()
+    except FileNotFoundError:
+        raise STPHTTPException("can not found file: stp.version", 404)
     return version
