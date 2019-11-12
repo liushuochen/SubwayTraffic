@@ -11,7 +11,9 @@ import json
 import conductor.system
 from errors.HTTPcode import STPHTTPException
 
-system_blue = flask.Blueprint("system_blue", __name__, url_prefix='/system/v1')
+system_blue = flask.Blueprint("system_blue",
+                              __name__,
+                              url_prefix='/system/v1')
 
 @ system_blue.route("/version", methods=["GET"])
 def get_version():
@@ -69,4 +71,27 @@ def login():
     flask.session.permanent = True
     flask.session[token] = username
     conductor.system.update_token("admin")
+    return message, 200
+
+
+@ system_blue.route("/logout", methods=["GET"])
+def logout():
+    username = flask.request.args.get("username", None)
+    if username is None:
+        message = {
+            "logout": False,
+            "error": "BadRequest: Invalid username."
+        }
+        message = json.dumps(message)
+        return message, 400
+
+    token = flask.request.headers.get("token", None)
+    if token not in flask.session:
+        message = {"logout": False, "error": "limited authority"}
+        message = json.dumps(message)
+        return message, 401
+
+    flask.session.pop(token)
+    message = {"logout": True}
+    message = json.dumps(message)
     return message, 200

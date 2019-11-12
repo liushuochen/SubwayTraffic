@@ -22,7 +22,7 @@ def get_version():
     try:
         version = open(url, "r").read()
     except FileNotFoundError:
-        raise STPHTTPException("can not found file: stp.version", 404)
+        raise STPHTTPException("can not found file: stp.version", 503)
     return version
 
 def get_token(username):
@@ -42,7 +42,7 @@ def verify_user(post_username, post_password):
     try:
         _, password, token = model.get_user_detail(post_username)
         if post_password != password:
-            raise STPHTTPException("Wrong username or password", 403)
+            raise STPHTTPException("Wrong username or password.", 403)
 
         return token
     except STPHTTPException as e:
