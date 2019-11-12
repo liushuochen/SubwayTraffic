@@ -10,5 +10,11 @@ import os
 
 
 def get_root_path():
-    url = os.path.abspath("")
+    url_list = (os.path.abspath("")).split("/")
+    url = ""
+    for path in url_list:
+        if path == "SubwayTraffic":
+            url = url + path
+            break
+        url = url + path + "/"
     return url
