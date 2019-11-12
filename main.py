@@ -19,8 +19,9 @@ if __name__ == '__main__':
     conf.read("conf/platform.conf")
     host = conf.get("system", "host")
     port = conf.get("system", "port")
+    session_key = conf.get("system", "session_key")
 
-    stp_app.secret_key = "qwerasdf@2019"
+    stp_app.secret_key = session_key
     stp_app.permanent_session_lifetime = datetime.timedelta(hours=1)
 
     stp_app.run(host=host, port=port)

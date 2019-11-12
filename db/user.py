@@ -40,7 +40,6 @@ def get_all_user_detail():
         pre_data["username"] = pre_db_data[0]
         pre_data["password"] = pre_db_data[1]
         pre_data["token"] = pre_db_data[2]
-        pre_data["status"] = pre_db_data[3]
         data.append(pre_data)
     return data
 
