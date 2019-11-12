@@ -1,2 +1,5 @@
-SubwayTraffic Platform v0.1.0.B010  查询版本号
-SubwayTraffic Platform v0.1.0.B020  系统登录
+SubwayTraffic Platform v0.1.0.B010
+    查询版本号
+SubwayTraffic Platform v0.1.0.B020
+    1、系统登录
+    2、修复获取project绝对路径的bug

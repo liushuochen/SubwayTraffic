@@ -45,5 +45,5 @@ def verify_user(post_username, post_password):
             raise STPHTTPException("Wrong username or password", 403)
 
         return token
-    except STPHTTPException:
-        raise STPHTTPException
+    except STPHTTPException as e:
+        raise e

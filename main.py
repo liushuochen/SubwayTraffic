@@ -21,6 +21,6 @@ if __name__ == '__main__':
     port = conf.get("system", "port")
 
     stp_app.secret_key = "qwerasdf@2019"
-    stp_app.permanent_session_lifetime = datetime.timedelta(days=10)
+    stp_app.permanent_session_lifetime = datetime.timedelta(hours=1)
 
     stp_app.run(host=host, port=port)

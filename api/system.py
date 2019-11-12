@@ -15,11 +15,12 @@ system_blue = flask.Blueprint("system_blue", __name__, url_prefix='/system/v1')
 
 @ system_blue.route("/version", methods=["GET"])
 def get_version():
-    # token = flask.request.headers.get("Token")
-    # if (token != "liushuochen") or (token is None):
-    #     message = {"version": "None", "error": "limited authority"}
-    #     message = json.dumps(message)
-    #     return message, 401
+    token = flask.request.headers.get("token", None)
+    if token not in flask.session:
+        message = {"version": "None", "error": "limited authority"}
+        message = json.dumps(message)
+        return message, 401
+
     try:
         version = (conductor.system.get_version()).strip()
     except STPHTTPException as e:
@@ -34,8 +35,7 @@ def get_version():
 
 @ system_blue.route("/login", methods=["POST"])
 def login():
-    data = flask.request.data
-    data = json.loads(data)
+    data = json.loads(flask.request.data)
     username = data.get("username", None)
     password = data.get("password", None)
     if (username is None) or (password is None):
@@ -49,8 +49,9 @@ def login():
 
     try:
         token = conductor.system.verify_user(username, password)
-        if username in flask.session:
-            raise STPHTTPException("User logged in.", 403)
+        for history_token in flask.session:
+            if flask.session[history_token] == username:
+                raise STPHTTPException("User logged in.", 403)
     except STPHTTPException as e:
         message = {
             "login": False,
@@ -66,5 +67,6 @@ def login():
     }
     message = json.dumps(message)
     flask.session.permanent = True
-    flask.session[username] = token
+    flask.session[token] = username
+    conductor.system.update_token("admin")
     return message, 200
