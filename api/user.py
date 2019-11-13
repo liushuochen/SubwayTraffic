@@ -8,7 +8,7 @@ Effect:             The SubwayTraffic Platform system api for user.
 
 import flask
 import json
-import db.user
+import conductor.user
 
 user_blue = flask.Blueprint("user_blue",
                             __name__,
@@ -22,7 +22,7 @@ def user_list():
         message = json.dumps(message)
         return message, 401
 
-    users = db.user.get_all_username()
+    users = conductor.user.users()
     message = {"users": users}
     message = json.dumps(message)
     return message, 200
