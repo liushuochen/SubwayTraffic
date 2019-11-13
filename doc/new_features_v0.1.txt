@@ -8,4 +8,10 @@ SubwayTraffic Platform v0.1.0.B020
     4、在配置文件中配置session加密key
 
 SubwayTraffic Platform v0.1.0.B030
-    登录退出
+    1、登录退出
+    2、接口文档
+
+SubwayTraffic Platform v0.1.0.B040
+    1、获取用户列表
+    2、修复接口文档中关于退出登录接口返回值的描述错误
+    3、修改获取版本号返回503时的返回值（将"version"对应的值修改为None）

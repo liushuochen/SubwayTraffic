@@ -10,9 +10,11 @@ import flask
 import configparser
 import datetime
 import api.system as system
+import api.user as user
 
 stp_app = flask.Flask("SubwayTraffic")
 stp_app.register_blueprint(system.system_blue)
+stp_app.register_blueprint(user.user_blue)
 
 if __name__ == '__main__':
     conf = configparser.ConfigParser()

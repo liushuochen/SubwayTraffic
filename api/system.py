@@ -3,7 +3,8 @@ Copyright SubwayTraffic Platform system Development team
 
 Development Time:   2019/11/10
 Developer:          LiuShuochen
-Effect:             The SubwayTraffic Platform system api for system operation.
+Effect:             The SubwayTraffic Platform system api for system
+                    operation.
 """
 
 import flask
@@ -19,7 +20,7 @@ system_blue = flask.Blueprint("system_blue",
 def get_version():
     token = flask.request.headers.get("token", None)
     if token not in flask.session:
-        message = {"version": "None", "error": "limited authority"}
+        message = {"version": None, "error": "limited authority"}
         message = json.dumps(message)
         return message, 401
 

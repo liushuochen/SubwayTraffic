@@ -3,8 +3,7 @@ Copyright SubwayTraffic Platform system Development team
 
 Development Time:   2019/11/11
 Developer:          LiuShuochen
-Effect:             The SubwayTraffic Platform system conductor for system
-                    operation.
+Effect:             The SubwayTraffic Platform system database driver.
 """
 
 import configparser
@@ -50,7 +49,7 @@ def get_all_username():
         usernames.append(user["username"])
     return usernames
 
-# if a invalid username, return a empty list[]
+# if a invalid username, return a empty list `[]`
 def get_user_detail(username):
     sql = "select * from user where username=\"%s\"" % username
     db_cursor.execute(sql)
