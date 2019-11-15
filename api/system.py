@@ -96,3 +96,15 @@ def logout():
     message = {"logout": True}
     message = json.dumps(message)
     return message, 200
+
+
+@ system_blue.route("/session", methods=["GET"])
+def get_session():
+    token = flask.request.headers.get("token", None)
+    if (token not in flask.session) or (flask.session[token] != "admin"):
+        message = {"error": "limited authority"}
+        message = json.dumps(message)
+        return message, 401
+
+    message = {"session": dict(flask.session)}
+    return message, 200

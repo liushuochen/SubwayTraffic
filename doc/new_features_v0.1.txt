@@ -17,4 +17,5 @@ SubwayTraffic Platform v0.1.0.B040
     3、修改获取版本号返回503时的返回值（将"version"对应的值修改为None）
 
 SubwayTraffic Platform v0.1.0.B050
-    user表新增列：create_time，用于表示用户的注册时间。
+    1、user表新增列：create_time，用于表示用户的注册时间。
+    2、获取session。admin用户可以获取当前session
