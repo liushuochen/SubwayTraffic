@@ -9,8 +9,11 @@ Effect:             The SubwayTraffic Platform system conductor for user.
 import db.user
 
 def users():
-    user_list = db.user.get_all_username()
-    if "admin" in user_list:
-        user_list.remove("admin")
+    user_list = db.user.get_all_user_detail()
+    print(user_list)
+    for user in user_list:
+        if user["username"] == "admin":
+            user_list.remove(user)
+            break
 
     return user_list

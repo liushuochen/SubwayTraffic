@@ -9,6 +9,7 @@ Effect:             The SubwayTraffic Platform system database driver.
 import configparser
 import mysql.connector
 import util
+import datetime
 from errors.HTTPcode import STPHTTPException
 
 root_path = util.get_root_path()
@@ -37,17 +38,11 @@ def get_all_user_detail():
     for pre_db_data in db_data:
         pre_data = {}
         pre_data["username"] = pre_db_data[0]
-        pre_data["password"] = pre_db_data[1]
         pre_data["token"] = pre_db_data[2]
+        pre_data["create"] = datetime.datetime.strftime(
+            pre_db_data[3], "%Y-%m-%d %H:%M:%S")
         data.append(pre_data)
     return data
-
-def get_all_username():
-    data = get_all_user_detail()
-    usernames = []
-    for user in data:
-        usernames.append(user["username"])
-    return usernames
 
 # if a invalid username, return a empty list `[]`
 def get_user_detail(username):

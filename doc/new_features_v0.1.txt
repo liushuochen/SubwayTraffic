@@ -15,3 +15,6 @@ SubwayTraffic Platform v0.1.0.B040
     1、获取用户列表
     2、修复接口文档中关于退出登录接口返回值的描述错误
     3、修改获取版本号返回503时的返回值（将"version"对应的值修改为None）
+
+SubwayTraffic Platform v0.1.0.B050
+    user表新增列：create_time，用于表示用户的注册时间。

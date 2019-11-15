@@ -40,7 +40,7 @@ def update_token(username):
 
 def verify_user(post_username, post_password):
     try:
-        _, password, token = model.get_user_detail(post_username)
+        _, password, token, _ = model.get_user_detail(post_username)
         if post_password != password:
             raise STPHTTPException("Wrong username or password.", 403)
 

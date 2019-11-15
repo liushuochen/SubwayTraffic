@@ -1,16 +1,8 @@
-import mysql.connector
+import db.user as model
+import datetime
 
 if __name__ == '__main__':
-    mysql_db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="122510",
-        database="subway"
-    )
-
-    mycursor = mysql_db.cursor()
-
-    mycursor.execute("SELECT * FROM user")
-
-    myresult = mycursor.fetchall()
-    print(myresult)
+    u = model.get_all_user_detail()
+    create = u[0]["create"]
+    create_str = datetime.datetime.strftime(create, "%Y-%m-%d %H:%M:%S")
+    print(create_str, type(create_str))
