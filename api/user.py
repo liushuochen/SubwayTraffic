@@ -50,3 +50,30 @@ def register_user():
     message = {"success": "registered user %s success" % username}
     message = json.dumps(message)
     return message, 200
+
+
+@ user_blue.route("/delete", methods=["DELETE"])
+def delete_user():
+    data = json.loads(flask.request.data)
+    username = data.get("username", None)
+    if username is None:
+        message = {"error": "Badrequest: Invalid param"}
+        message = json.dumps(message)
+        return message, 400
+
+    token = flask.request.headers.get("token", None)
+    if (token not in flask.session) or (flask.session[token] != "admin"):
+        message = {"error": "limited authority"}
+        message = json.dumps(message)
+        return message, 401
+
+    try:
+        conductor.user.destroy(username)
+    except STPHTTPException as e:
+        message = {"error": e.error_message}
+        message = json.dumps(message)
+        return message, e.httpcode
+
+    message = {"success": "delete user %s success" % username}
+    message = json.dumps(message)
+    return message, 200

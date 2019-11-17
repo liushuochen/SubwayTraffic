@@ -23,3 +23,7 @@ SubwayTraffic Platform v0.1.0.B050
 SubwayTraffic Platform v0.1.0.B060
     1、用户注册
     2、db层规范化异常处理
+
+SubwayTraffic Platform v0.1.0.B070
+    1、删除用户
+    2、获取时间类型字符串函数化
