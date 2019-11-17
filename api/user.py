@@ -9,10 +9,12 @@ Effect:             The SubwayTraffic Platform system api for user.
 import flask
 import json
 import conductor.user
+from errors.HTTPcode import STPHTTPException
 
 user_blue = flask.Blueprint("user_blue",
                             __name__,
                             url_prefix='/user/v1')
+
 
 @ user_blue.route("/users", methods=["GET"])
 def user_list():
@@ -24,5 +26,27 @@ def user_list():
 
     users = conductor.user.users()
     message = {"users": users}
+    message = json.dumps(message)
+    return message, 200
+
+
+@ user_blue.route("/register", methods=["POST"])
+def register_user():
+    data = json.loads(flask.request.data)
+    username = data.get("username", None)
+    password = data.get("password", None)
+    if username is None or password is None:
+        message = {"error": "Badrequest: Invalid param"}
+        message = json.dumps(message)
+        return message, 400
+
+    try:
+        conductor.user.register(username, password)
+    except STPHTTPException as e:
+        message = {"error": e.error_message}
+        message = json.dumps(message)
+        return message, e.httpcode
+
+    message = {"success": "registered user %s success" % username}
     message = json.dumps(message)
     return message, 200

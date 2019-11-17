@@ -11,7 +11,7 @@ import util
 import db.user as model
 import random
 import string
-from errors.HTTPcode import STPHTTPException
+from errors.HTTPcode import STPHTTPException, DBError
 
 pools = string.ascii_letters + string.digits
 TOKEN_LENGTH = 10
@@ -25,18 +25,18 @@ def get_version():
         raise STPHTTPException("can not found file: stp.version", 503)
     return version
 
+
 def get_token(username):
     details = model.get_user_detail(username)[0]
     token = details[2]
     return token
 
+
 def update_token(username):
-    new_token_list = []
-    for i in range(TOKEN_LENGTH):
-        new_token_list.append(random.choice(pools))
-    new_token = "".join(new_token_list)
+    new_token = general_token()
     model.update_token(username, new_token)
     return
+
 
 def verify_user(post_username, post_password):
     try:
@@ -45,5 +45,13 @@ def verify_user(post_username, post_password):
             raise STPHTTPException("Wrong username or password.", 403)
 
         return token
-    except STPHTTPException as e:
-        raise e
+    except DBError as e:
+        raise STPHTTPException(e.error_message, e.error_message)
+
+
+def general_token():
+    new_token_list = []
+    for i in range(TOKEN_LENGTH):
+        new_token_list.append(random.choice(pools))
+    new_token = "".join(new_token_list)
+    return new_token

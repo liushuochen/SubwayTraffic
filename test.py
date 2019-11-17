@@ -1,8 +1,11 @@
-import db.user as model
-import datetime
+import mysql.connector
 
 if __name__ == '__main__':
-    u = model.get_all_user_detail()
-    create = u[0]["create"]
-    create_str = datetime.datetime.strftime(create, "%Y-%m-%d %H:%M:%S")
-    print(create_str, type(create_str))
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="122510",
+    )
+
+    cursor = db.cursor()
+    cursor.execute("create database demo999 charset utf8")

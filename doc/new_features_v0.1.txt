@@ -19,3 +19,7 @@ SubwayTraffic Platform v0.1.0.B040
 SubwayTraffic Platform v0.1.0.B050
     1、user表新增列：create_time，用于表示用户的注册时间。
     2、获取session。admin用户可以获取当前session
+
+SubwayTraffic Platform v0.1.0.B060
+    1、用户注册
+    2、db层规范化异常处理

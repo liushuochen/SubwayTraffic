@@ -10,11 +10,10 @@ import configparser
 import mysql.connector
 import util
 import datetime
-from errors.HTTPcode import STPHTTPException
+from errors.HTTPcode import DBError
 
 root_path = util.get_root_path()
 url = root_path + "/conf/platform.conf"
-print(url)
 conf = configparser.ConfigParser()
 conf.read(url)
 username = conf.get("database", "username")
@@ -44,20 +43,35 @@ def get_all_user_detail():
         data.append(pre_data)
     return data
 
+
 # if a invalid username, return a empty list `[]`
 def get_user_detail(username):
     sql = "select * from user where username=\"%s\"" % username
     db_cursor.execute(sql)
     data = db_cursor.fetchall()
     if not data:
-        raise STPHTTPException("can not find user %s" % username, 404)
+        raise DBError("can not find user %s" % username, 404)
     user_details = data[0]
     return user_details
+
 
 # if username is a invalid username, update_token can not raise any errors
 def update_token(username, token):
     sql =  "update user set token=\"%s\" where username=\"%s\"" % \
            (token, username)
     db_cursor.execute(sql)
+    mysql_db.commit()
+    return
+
+
+def add_user(**kwargs):
+    username = kwargs["username"]
+    password = kwargs["password"]
+    create_time = kwargs["register_time"]
+    token = kwargs["token"]
+    sql = "insert into user(username, password, create_time, token) " \
+          "values(%s, %s, %s, %s)"
+    val = (username, password, create_time, token)
+    db_cursor.execute(sql, val)
     mysql_db.commit()
     return
