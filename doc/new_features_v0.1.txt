@@ -27,3 +27,7 @@ SubwayTraffic Platform v0.1.0.B060
 SubwayTraffic Platform v0.1.0.B070
     1、删除用户
     2、获取时间类型字符串函数化
+
+SubwayTraffic Platform v0.1.0.B080
+    1、修复登录时使用错误的用户名的场景时，错误码返回成错误消息的问题。
+    2、README.md新增 项目介绍、主要功能、登录标题

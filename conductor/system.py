@@ -46,7 +46,7 @@ def verify_user(post_username, post_password):
 
         return token
     except DBError as e:
-        raise STPHTTPException(e.error_message, e.error_message)
+        raise STPHTTPException(e.error_message, e.error_code)
 
 
 def general_token():
