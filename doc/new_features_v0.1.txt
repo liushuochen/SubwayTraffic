@@ -36,3 +36,6 @@ SubwayTraffic Platform v0.1.0.B090
     1、修复普通用户登录后，依然能够获取到全部用户列表的问题。（该功能修改为仅admin用户
         可以获取全部用户列表）
     2、修复普通用户token不会自动变更的bug
+
+SubwayTraffic Platform v0.1.0
+    不保存发布
