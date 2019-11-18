@@ -71,7 +71,7 @@ def login():
     message = json.dumps(message)
     flask.session.permanent = True
     flask.session[token] = username
-    conductor.system.update_token("admin")
+    conductor.system.update_token(username)
     return message, 200
 
 

@@ -19,7 +19,7 @@ user_blue = flask.Blueprint("user_blue",
 @ user_blue.route("/users", methods=["GET"])
 def user_list():
     token = flask.request.headers.get("token", None)
-    if token not in flask.session:
+    if token not in flask.session or flask.session[token] != "admin":
         message = {"users": [], "error": "limited authority"}
         message = json.dumps(message)
         return message, 401
