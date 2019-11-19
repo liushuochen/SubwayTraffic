@@ -46,7 +46,8 @@ def create_user_table(config):
         host="localhost",
         user=username,
         password=password,
-        database=db_name
+        database=db_name,
+        auth_plugin='mysql_native_password'
     )
 
     db_cursor = mysql_db.cursor()
@@ -82,7 +83,8 @@ def get_all_tables(config):
         host="localhost",
         user=username,
         password=password,
-        database=db_name
+        database=db_name,
+        auth_plugin='mysql_native_password'
     )
 
     db_cursor = mysql_db.cursor()
@@ -101,7 +103,8 @@ def init_database(name, config):
     mysql_db = mysql.connector.connect(
         host="localhost",
         user=username,
-        password=password
+        password=password,
+        auth_plugin='mysql_native_password'
     )
 
     db_cursor = mysql_db.cursor()
@@ -117,7 +120,8 @@ def get_all_database(config):
     mysql_db = mysql.connector.connect(
         host="localhost",
         user=username,
-        password=password
+        password=password,
+        auth_plugin='mysql_native_password'
     )
 
     db_cursor = mysql_db.cursor()

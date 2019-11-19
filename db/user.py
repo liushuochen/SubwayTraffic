@@ -22,7 +22,8 @@ mysql_db = mysql.connector.connect(
     host="localhost",
     user=username,
     password=password,
-    database="subway"
+    database="subway",
+    auth_plugin='mysql_native_password'
 )
 
 db_cursor = mysql_db.cursor()
