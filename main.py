@@ -11,6 +11,7 @@ import configparser
 import datetime
 import api.system as system
 import api.user as user
+import db
 
 stp_app = flask.Flask("SubwayTraffic")
 stp_app.register_blueprint(system.system_blue)
@@ -25,5 +26,7 @@ if __name__ == '__main__':
 
     stp_app.secret_key = session_key
     stp_app.permanent_session_lifetime = datetime.timedelta(hours=1)
+
+    db.init()
 
     stp_app.run(host=host, port=port)

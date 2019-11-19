@@ -39,3 +39,6 @@ SubwayTraffic Platform v0.1.0.B090
 
 SubwayTraffic Platform v0.1.0
     不保存发布
+
+SubwayTraffic Platform v0.2.0.B010
+    1、软初始化数据库特性开发

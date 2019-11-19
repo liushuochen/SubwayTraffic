@@ -23,7 +23,7 @@ def get_root_path():
 
 # translate datetime.datetime to string.
 # if time_data is None, func will return current time string format.
-# time_date'a type must be datetime.datetime
+# time_date's type must be datetime.datetime
 def get_time_string_format(time_data=None):
     if not time_data:
         time_string = \
