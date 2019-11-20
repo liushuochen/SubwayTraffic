@@ -42,3 +42,4 @@ SubwayTraffic Platform v0.1.0
 
 SubwayTraffic Platform v0.2.0.B010
     1、软初始化数据库特性开发
+    2、增加开发环境依赖配置文件../conf/depend_packages.json（暂时只注明依赖包和版本号）
