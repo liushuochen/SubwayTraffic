@@ -13,7 +13,7 @@ import util
 from errors.HTTPcode import DBError
 
 root_path = util.get_root_path()
-url = root_path + "/conf/platform.conf"
+url = root_path + "/conf/database.conf"
 conf = configparser.ConfigParser()
 conf.read(url)
 username = conf.get("database", "username")

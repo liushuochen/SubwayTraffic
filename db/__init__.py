@@ -15,7 +15,7 @@ import conductor.system
 def init():
     print("Begin to init database...")
 
-    conf_path = util.get_root_path() + "/conf/platform.conf"
+    conf_path = util.get_root_path() + "/conf/database.conf"
     deploy_conf = configparser.ConfigParser()
     deploy_conf.read(conf_path)
 

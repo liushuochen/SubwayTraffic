@@ -45,3 +45,4 @@ SubwayTraffic Platform v0.2.0.B010
     2、增加开发环境依赖配置文件../conf/depend_packages.json（暂时只注明依赖包和版本号）
     3、增加解决mysql版本不同导致的连接问题字段
     4、增加开发者信息
+    5、新增database.conf，专门用于记录数据库信息
