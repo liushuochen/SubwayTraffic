@@ -11,6 +11,7 @@ Effect:             The SubwayTraffic Platform system api for system
 import flask
 import json
 import conductor.system
+from api import logger
 from errors.HTTPcode import STPHTTPException
 
 system_blue = flask.Blueprint("system_blue",
@@ -23,6 +24,7 @@ def get_version():
     if token not in flask.session:
         message = {"version": None, "error": "limited authority"}
         message = json.dumps(message)
+        logger.debug("GET /system/v1/version - 401")
         return message, 401
 
     try:
@@ -30,10 +32,12 @@ def get_version():
     except STPHTTPException as e:
         message = {"version": "None", "error": e.error_message}
         message = json.dumps(message)
+        logger.debug("GET /system/v1/version - %s" % e.httpcode)
         return message, e.httpcode
 
     message = {"version": version}
     message = json.dumps(message)
+    logger.debug("GET /system/v1/version - 200")
     return message, 200
 
 
