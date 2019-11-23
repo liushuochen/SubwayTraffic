@@ -1,4 +1,5 @@
-
+import datetime
 
 if __name__ == '__main__':
-    open("/Users/liushuochen/log/SubwayTraffic/api/api.log", "w").write("")
+    now = datetime.datetime.now().strftime("%Y-%m-%d")
+    print(now, type(now))

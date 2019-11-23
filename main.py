@@ -14,6 +14,7 @@ import api.system as system
 import api.user as user
 import db
 import logs
+from api import logger
 
 stp_app = flask.Flask("SubwayTraffic")
 stp_app.register_blueprint(system.system_blue)
@@ -37,4 +38,6 @@ if __name__ == '__main__':
 
     init()
 
+    logger.info("=" * 23)
+    logger.info("Service starting....")
     stp_app.run(host=host, port=port)

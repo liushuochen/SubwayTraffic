@@ -27,17 +27,27 @@ class LOG():
         self.log_name = kwargs["name"]
 
     def info(self, message):
-        info_log_path = self.log_path + "/" + self.log_name + "/info.log"
+        file_name = generate_file_name("info")
+        info_log_path = self.log_path + "/" + self.log_name + "/" + file_name
         write_logs(info_log_path, message, "a")
 
     def error(self, message):
-        error_log_path = self.log_path + "/" + self.log_name + "/error.log"
+        file_name = generate_file_name("error")
+        error_log_path = self.log_path + "/" + self.log_name + "/" + file_name
         write_logs(error_log_path, message, "a")
 
     def warn(self, message):
-        warn_log_path = self.log_path + "/" + self.log_name + "/warn.log"
+        file_name = generate_file_name("warn")
+        warn_log_path = self.log_path + "/" + self.log_name + "/" + file_name
         write_logs(warn_log_path, message, "a")
 
     def debug(self, message):
-        debug_log_path = self.log_path + "/" + self.log_name + "/debug.log"
+        file_name = generate_file_name("debug")
+        debug_log_path = self.log_path + "/" + self.log_name + "/" + file_name
         write_logs(debug_log_path, message, "a")
+
+
+def generate_file_name(level):
+    date_str = datetime.datetime.now().strftime("%Y-%m-%d")
+    file_name = date_str + level + ".log"
+    return file_name
