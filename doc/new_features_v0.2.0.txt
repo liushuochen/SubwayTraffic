@@ -54,3 +54,4 @@ SubwayTraffic Platform v0.2.0.B020
 SubwayTraffic Platform v0.2.0.B030
     1、日志分期分类开发
     2、/api/system.py中增加日志
+    3、/api/user.py中增加日志
