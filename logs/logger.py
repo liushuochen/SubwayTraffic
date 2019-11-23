@@ -11,15 +11,6 @@ import os
 import datetime
 
 
-def write_logs(file, message, model):
-    now = datetime.datetime.today().isoformat()[:-3]
-    message = now + " " + message + "\n"
-    if not os.path.exists(file):
-        open(file, "w").write(message)
-    else:
-        open(file, model).write(message)
-
-
 class LOG():
     def __init__(self, **kwargs):
         self.log_model = kwargs["model"]
@@ -51,3 +42,11 @@ def generate_file_name(level):
     date_str = datetime.datetime.now().strftime("%Y-%m-%d")
     file_name = date_str + level + ".log"
     return file_name
+
+def write_logs(file, message, model):
+    now = datetime.datetime.today().isoformat()[:-3]
+    message = now + " " + message + "\n"
+    if not os.path.exists(file):
+        open(file, "w").write(message)
+    else:
+        open(file, model).write(message)

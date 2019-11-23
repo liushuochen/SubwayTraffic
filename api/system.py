@@ -46,6 +46,7 @@ def login():
     data = json.loads(flask.request.data)
     username = data.get("username", None)
     password = data.get("password", None)
+    logger.info("user %s login..." % username)
     if (username is None) or (password is None):
         message = {
             "login": False,
@@ -53,6 +54,9 @@ def login():
             "error": "BadRequest: Invalid username or password."
         }
         message = json.dumps(message)
+        logger.error("user %s login ERROR: Invalid username or password."
+                    % username)
+        logger.debug("POST /system/v1/login - 400")
         return message, 400
 
     try:
@@ -67,6 +71,8 @@ def login():
             "error": e.error_message
         }
         message = json.dumps(message)
+        logger.error("user %s login ERROR: %s." % (username, e.error_message))
+        logger.debug("POST /system/v1/login - %s" % e.httpcode)
         return message, e.httpcode
 
     message = {
@@ -77,29 +83,38 @@ def login():
     flask.session.permanent = True
     flask.session[token] = username
     conductor.system.update_token(username)
+    logger.info("user %s login success." % username)
+    logger.debug("POST /system/v1/login - 200")
     return message, 200
 
 
 @ system_blue.route("/logout", methods=["GET"])
 def logout():
     username = flask.request.args.get("username", None)
+    logger.info("user %s logout..." % username)
     if username is None:
         message = {
             "logout": False,
             "error": "BadRequest: Invalid username."
         }
         message = json.dumps(message)
+        logger.error("Invalid user logout.")
+        logger.debug("GET /system/v1/logout - 400")
         return message, 400
 
     token = flask.request.headers.get("token", None)
     if token not in flask.session:
         message = {"logout": False, "error": "limited authority"}
         message = json.dumps(message)
+        logger.warn("Can not logout user %s: limited authority!" % username)
+        logger.debug("GET /system/v1/logout - 401")
         return message, 401
 
     flask.session.pop(token)
     message = {"logout": True}
     message = json.dumps(message)
+    logger.info("user %s logout success." % username)
+    logger.debug("GET /system/v1/logout - 200")
     return message, 200
 
 
@@ -109,7 +124,10 @@ def get_session():
     if (token not in flask.session) or (flask.session[token] != "admin"):
         message = {"error": "limited authority"}
         message = json.dumps(message)
+        logger.warn("Can not get session: limited authority!")
+        logger.debug("GET /system/v1/session - 401")
         return message, 401
 
     message = {"session": dict(flask.session)}
+    logger.debug("GET /system/v1/session - 200")
     return message, 200
