@@ -11,6 +11,8 @@ Effect:             The SubwayTraffic Platform system api for system
 import flask
 import json
 import conductor.system
+import os
+import signal
 from api import logger
 from errors.HTTPcode import STPHTTPException
 
@@ -18,7 +20,7 @@ system_blue = flask.Blueprint("system_blue",
                               __name__,
                               url_prefix='/system/v1')
 
-@ system_blue.route("/version", methods=["GET"])
+@system_blue.route("/version", methods=["GET"])
 def get_version():
     token = flask.request.headers.get("token", None)
     if token not in flask.session:
@@ -41,7 +43,7 @@ def get_version():
     return message, 200
 
 
-@ system_blue.route("/login", methods=["POST"])
+@system_blue.route("/login", methods=["POST"])
 def login():
     data = json.loads(flask.request.data)
     username = data.get("username", None)
@@ -88,7 +90,7 @@ def login():
     return message, 200
 
 
-@ system_blue.route("/logout", methods=["GET"])
+@system_blue.route("/logout", methods=["GET"])
 def logout():
     username = flask.request.args.get("username", None)
     logger.info("user %s logout..." % username)
@@ -118,7 +120,7 @@ def logout():
     return message, 200
 
 
-@ system_blue.route("/session", methods=["GET"])
+@system_blue.route("/session", methods=["GET"])
 def get_session():
     token = flask.request.headers.get("token", None)
     if (token not in flask.session) or (flask.session[token] != "admin"):
@@ -131,3 +133,31 @@ def get_session():
     message = {"session": dict(flask.session)}
     logger.debug("GET /system/v1/session - 200")
     return message, 200
+
+
+@system_blue.route("/shutdown", methods=["POST"])
+def shutdown_servers():
+    data = json.loads(flask.request.data)
+    admin_password = data.get("password", None)
+
+    token = flask.request.headers.get("token", None)
+    if (token not in flask.session) or (flask.session[token] != "admin"):
+        message = {"error": "server shutdown failed"}
+        message = json.dumps(message)
+        logger.warn("try to shutdown server failed.")
+        logger.debug("GET /system/v1/shutdown - 401")
+        return message, 401
+
+    try:
+        conductor.system.verify_user("admin", admin_password)
+        # TODO: if system generate multiprocessing, it must kill them before
+        # TODO:     shutdown.
+        logger.info("==========server shutdown==========")
+        os.kill(os.getpid(), signal.SIGKILL)
+
+    except STPHTTPException as e:
+        message = {"error": e.error_message}
+        message = json.dumps(message)
+        logger.debug("GET /system/v1/shutdown - %s" % e.httpcode)
+        logger.warn("try to shutdown server failed.")
+        return message, e.httpcode
