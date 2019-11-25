@@ -14,6 +14,7 @@ import api.system as system
 import api.user as user
 import db
 import logs
+import conductor
 from api import logger
 
 stp_app = flask.Flask("SubwayTraffic")
@@ -24,6 +25,7 @@ stp_app.register_blueprint(user.user_blue)
 def init():
     logs.init()
     db.init()
+    conductor.init()
 
 
 if __name__ == '__main__':

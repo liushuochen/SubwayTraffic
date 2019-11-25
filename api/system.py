@@ -13,6 +13,7 @@ import json
 import conductor.system
 import os
 import signal
+import conductor
 from api import logger
 from errors.HTTPcode import STPHTTPException
 
@@ -150,10 +151,10 @@ def shutdown_servers():
 
     try:
         conductor.system.verify_user("admin", admin_password)
-        # TODO: if system generate multiprocessing, it must kill them before
-        # TODO:     shutdown.
         logger.info("==========server shutdown==========")
-        os.kill(os.getpid(), signal.SIGKILL)
+        while not conductor.process.empty():
+            pid = conductor.process.pop()
+            os.kill(pid, signal.SIGKILL)
 
     except STPHTTPException as e:
         message = {"error": e.error_message}

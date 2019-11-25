@@ -1,6 +1,6 @@
-import sys
+from conductor import process
 
-def add_a(q):
-    q.add(3)
-    print("inner test2:",q.show())
-    sys.exit()
+def demo():
+    process.push("321")
+    process.push("321")
+    process.push("123")
