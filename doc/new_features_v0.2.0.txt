@@ -59,3 +59,7 @@ SubwayTraffic Platform v0.2.0.B030
 SubwayTraffic Platform v0.2.0.B040
     1、系统结束运行功能开发
     2、进程栈开发
+
+SubwayTraffic Platform v0.2.0.B050
+    1、解决前后端交互出现的跨域问题
+    2、增加前端文件夹存放前端文件
