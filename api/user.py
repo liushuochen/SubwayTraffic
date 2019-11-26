@@ -18,7 +18,15 @@ user_blue = flask.Blueprint("user_blue",
                             url_prefix='/user/v1')
 
 
-@ user_blue.route("/users", methods=["GET"])
+@user_blue.after_request
+def after_request(resp):
+    resp.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,session_id')
+    resp.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD')
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
+
+@user_blue.route("/users", methods=["GET"])
 def user_list():
     token = flask.request.headers.get("token", None)
     if token not in flask.session or flask.session[token] != "admin":
@@ -35,7 +43,7 @@ def user_list():
     return message, 200
 
 
-@ user_blue.route("/register", methods=["POST"])
+@user_blue.route("/register", methods=["POST"])
 def register_user():
     data = json.loads(flask.request.data)
     username = data.get("username", None)
@@ -63,7 +71,7 @@ def register_user():
     return message, 200
 
 
-@ user_blue.route("/delete", methods=["DELETE"])
+@user_blue.route("/delete", methods=["DELETE"])
 def delete_user():
     data = json.loads(flask.request.data)
     username = data.get("username", None)

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>111111111</title>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	</head>
+	<body>
+		<p>
+			<input type="text" id="username" placeholder="账号" />
+		</p>
+		<p>
+			<input type="password" id="password" placeholder="密码" />
+		</p>
+		<p>
+			<input type="button" id="login" value="login" />
+			<input type="button" id="userlist" value="列表" />
+		</p>
+	</body>
+	<script type="text/javascript">
+		$("#login").click(function () {
+			const uname = $("#username").val();
+			const password = $("#password").val();
+			$.ajax({
+				url: "http://localhost:9188/system/v1/login",
+				type: "post",
+				data: JSON.stringify({
+					"username": uname,
+					"password": password
+				}),
+				contentType: "application/json; charset=UTF-8",
+				dataType: "json",
+				success: function(response){
+					alert(JSON.stringify(response));
+				}
+			});
+		})
+		$("#userlist").click(function () {
+			$.ajax({
+				url: "http://localhost:9188/user/v1/users",
+				type: "GET",
+				data: "",
+				contentType: "application/json; charset=UTF-8",
+				dataType: "json",
+				success: function(response){
+					alert(JSON.stringify(response));
+				},
+				error: function (error) {
+					alert(JSON.stringify(error));
+				}
+			});
+		})
+	</script>
+</html>

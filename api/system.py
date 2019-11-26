@@ -21,6 +21,15 @@ system_blue = flask.Blueprint("system_blue",
                               __name__,
                               url_prefix='/system/v1')
 
+
+@system_blue.after_request
+def after_request(resp):
+    resp.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,session_id')
+    resp.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD')
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
+
 @system_blue.route("/version", methods=["GET"])
 def get_version():
     token = flask.request.headers.get("token", None)
@@ -58,7 +67,7 @@ def login():
         }
         message = json.dumps(message)
         logger.error("user %s login ERROR: Invalid username or password."
-                    % username)
+                     % username)
         logger.debug("POST /system/v1/login - 400")
         return message, 400
 
