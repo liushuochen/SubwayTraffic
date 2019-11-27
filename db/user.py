@@ -7,33 +7,16 @@ Developer:          LiuShuochen
 Effect:             The SubwayTraffic Platform system database driver.
 """
 
-import configparser
-import mysql.connector
 import util
+import db.engine
 from errors.HTTPcode import DBError
-
-root_path = util.get_root_path()
-url = root_path + "/conf/database.conf"
-conf = configparser.ConfigParser()
-conf.read(url)
-username = conf.get("database", "username")
-password = conf.get("database", "password")
-
-mysql_db = mysql.connector.connect(
-    host="localhost",
-    user=username,
-    password=password,
-    database="subway",
-    auth_plugin='mysql_native_password'
-)
-
-db_cursor = mysql_db.cursor()
 
 
 def get_all_user_detail():
+    engine, cursor = db.engine.get_engine()
     sql = "select * from user"
-    db_cursor.execute(sql)
-    db_data = db_cursor.fetchall()
+    cursor.execute(sql)
+    db_data = cursor.fetchall()
     data = []
     for pre_db_data in db_data:
         pre_data = {}
@@ -42,30 +25,36 @@ def get_all_user_detail():
         pre_data["create"] = \
             util.get_time_string_format(time_data=pre_db_data[3])
         data.append(pre_data)
+    engine.close()
     return data
 
 
 # if a invalid username, return a empty list `[]`
 def get_user_detail(username):
+    engine, cursor = db.engine.get_engine()
     sql = "select * from user where username=\"%s\"" % username
-    db_cursor.execute(sql)
-    data = db_cursor.fetchall()
+    cursor.execute(sql)
+    data = cursor.fetchall()
     if not data:
         raise DBError("can not find user %s" % username, 404)
     user_details = data[0]
+    engine.close()
     return user_details
 
 
 # if username is a invalid username, update_token can not raise any errors
 def update_token(username, token):
+    engine, cursor = db.engine.get_engine()
     sql =  "update user set token=\"%s\" where username=\"%s\"" % \
            (token, username)
-    db_cursor.execute(sql)
-    mysql_db.commit()
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
     return
 
 
 def add_user(**kwargs):
+    engine, cursor = db.engine.get_engine()
     username = kwargs["username"]
     password = kwargs["password"]
     create_time = kwargs["register_time"]
@@ -73,13 +62,16 @@ def add_user(**kwargs):
     sql = "insert into user(username, password, create_time, token) " \
           "values(%s, %s, %s, %s)"
     val = (username, password, create_time, token)
-    db_cursor.execute(sql, val)
-    mysql_db.commit()
+    cursor.execute(sql, val)
+    engine.commit()
+    engine.close()
     return
 
 
 def drop_user(username):
+    engine, cursor = db.engine.get_engine()
     sql = "delete from user where username=\"%s\"" % username
-    db_cursor.execute(sql)
-    mysql_db.commit()
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
     return

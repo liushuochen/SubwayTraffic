@@ -43,6 +43,7 @@ def generate_file_name(level):
     file_name = date_str + level + ".log"
     return file_name
 
+
 def write_logs(file, message, model):
     now = datetime.datetime.today().isoformat()[:-3]
     message = now + " " + message + "\n"

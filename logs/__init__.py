@@ -8,22 +8,25 @@ Effect:             The SubwayTraffic Platform system log init
 """
 
 import os
-import configparser
 import util
 
 def init():
-    conf = configparser.ConfigParser()
-    config_path = util.get_root_path() + "/conf/platform.conf"
-    conf.read(config_path)
-    log_path = conf.get("logs", "log_path")
+    log_path = util.get_log_path()
 
     api_log_path = log_path + "/api"
     conductor_log_path = log_path + "/conductor"
+    database_log_path = log_path + "/database"
 
-    try:
-        os.makedirs(api_log_path)
-        os.makedirs(conductor_log_path)
-    except FileExistsError:
-        return
+    sub_log_path = [
+        api_log_path,
+        conductor_log_path,
+        database_log_path
+    ]
+
+    for dir in sub_log_path:
+        try:
+            os.makedirs(dir)
+        except FileExistsError:
+            continue
 
     return

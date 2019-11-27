@@ -11,6 +11,7 @@ import configparser
 import util
 import mysql.connector
 import conductor.system
+import db.engine
 from logs.logger import LOG
 
 log_path = util.get_log_path()
@@ -30,13 +31,13 @@ def init():
 
     # init database
     db_name = deploy_conf.get("deploy", "name")
-    databases = get_all_database(deploy_conf)
+    databases = get_all_database()
     if db_name not in databases:
-        init_database(db_name, deploy_conf)
+        init_database(db_name)
 
     # init table
     deploy_type = deploy_conf.get("deploy", "build_type")
-    tables = get_all_tables(deploy_conf)
+    tables = get_all_tables(db_name)
     if "user" not in tables:
         create_user_table(deploy_conf)
     else:
@@ -48,28 +49,16 @@ def init():
 
 
 def create_user_table(config):
-    username = config.get("database", "username")
-    password = config.get("database", "password")
-    db_name = config.get("deploy", "name")
-
-    mysql_db = mysql.connector.connect(
-        host="localhost",
-        user=username,
-        password=password,
-        database=db_name,
-        auth_plugin='mysql_native_password'
-    )
-
-    db_cursor = mysql_db.cursor()
+    engine, cursor = db.engine.get_engine()
     sql = """
     create table user(
-    username    varchar(23),
-    password    varchar(18),
-    token       char(10),
-    create_time datetime
+    username    varchar(23) not null,
+    password    varchar(18) not null,
+    token       char(10) not null,
+    create_time datetime not null
     ) charset utf8
     """
-    db_cursor.execute(sql)
+    cursor.execute(sql)
 
     # add admin user
     admin_user = config.get("deploy", "admin_user")
@@ -79,65 +68,37 @@ def create_user_table(config):
     sql = "insert into user(username, password, create_time, token) " \
           "values(%s, %s, %s, %s)"
     val = (admin_user, admin_pwd, now, token)
-    db_cursor.execute(sql, val)
-    mysql_db.commit()
+    cursor.execute(sql, val)
+    engine.commit()
+    engine.close()
     return
 
 
-def get_all_tables(config):
-    username = config.get("database", "username")
-    password = config.get("database", "password")
-    db_name = config.get("deploy", "name")
-
-    mysql_db = mysql.connector.connect(
-        host="localhost",
-        user=username,
-        password=password,
-        database=db_name,
-        auth_plugin='mysql_native_password'
-    )
-
-    db_cursor = mysql_db.cursor()
-    db_cursor.execute("show tables")
-    db_data = db_cursor.fetchall()
+def get_all_tables(db_name):
+    engine, cursor = db.engine.get_engine(database_name=db_name)
+    cursor.execute("show tables")
+    db_data = cursor.fetchall()
     tables = []
     for table_tuple in db_data:
         tables.append(table_tuple[0])
+    engine.close()
     return tables
 
 
-def init_database(name, config):
-    username = config.get("database", "username")
-    password = config.get("database", "password")
-
-    mysql_db = mysql.connector.connect(
-        host="localhost",
-        user=username,
-        password=password,
-        auth_plugin='mysql_native_password'
-    )
-
-    db_cursor = mysql_db.cursor()
+def init_database(name):
+    engine, cursor = db.engine.base_engine()
     sql = "create database %s charset utf8" % name
-    db_cursor.execute(sql)
+    cursor.execute(sql)
+    engine.close()
     return
 
 
-def get_all_database(config):
-    username = config.get("database", "username")
-    password = config.get("database", "password")
-
-    mysql_db = mysql.connector.connect(
-        host="localhost",
-        user=username,
-        password=password,
-        auth_plugin='mysql_native_password'
-    )
-
-    db_cursor = mysql_db.cursor()
-    db_cursor.execute("show databases")
-    db_data = db_cursor.fetchall()
+def get_all_database():
+    engine, cursor = db.engine.base_engine()
+    cursor.execute("show databases")
+    db_data = cursor.fetchall()
     databases = []
     for database_tuple in db_data:
         databases.append(database_tuple[0])
+    engine.close()
     return databases
