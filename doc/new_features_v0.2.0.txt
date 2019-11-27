@@ -66,4 +66,4 @@ SubwayTraffic Platform v0.2.0.B040
 SubwayTraffic Platform v0.2.0.B050
     1、解决前后端交互出现的跨域问题
     2、增加前端文件夹存放前端文件
-    3、并发日志清理功能的开发
+    3、自动日志清理功能的开发
