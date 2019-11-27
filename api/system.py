@@ -24,8 +24,10 @@ system_blue = flask.Blueprint("system_blue",
 
 @system_blue.after_request
 def after_request(resp):
-    resp.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,session_id')
-    resp.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD')
+    resp.headers.add('Access-Control-Allow-Headers',
+                     'Content-Type,Authorization,session_id')
+    resp.headers.add('Access-Control-Allow-Methods',
+                     'GET,PUT,POST,DELETE,OPTIONS,HEAD')
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 

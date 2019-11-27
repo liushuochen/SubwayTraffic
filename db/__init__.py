@@ -11,6 +11,14 @@ import configparser
 import util
 import mysql.connector
 import conductor.system
+from logs.logger import LOG
+
+log_path = util.get_log_path()
+logger = LOG(
+    model="a",
+    path=log_path,
+    name="database"
+)
 
 def init():
     print("Begin to init database...")

@@ -7,14 +7,10 @@ Developer:          LiuShuochen
 Effect:             The SubwayTraffic Platform system api init
 """
 
-import configparser
 import util
 from logs.logger import LOG
 
-conf_path = util.get_root_path() + "/conf/platform.conf"
-conf = configparser.ConfigParser()
-conf.read(conf_path)
-log_path = conf.get("logs", "log_path")
+log_path = util.get_log_path()
 
 logger = LOG(
     model="a",

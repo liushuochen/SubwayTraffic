@@ -9,7 +9,7 @@ Effect:             The SubwayTraffic Platform system util tools.
 
 import os
 import datetime
-
+import configparser
 
 def get_root_path():
     url_list = (os.path.abspath("")).split("/")
@@ -32,3 +32,11 @@ def get_time_string_format(time_data=None):
     else:
         time_string = time_data.strftime("%Y-%m-%d %H:%M:%S")
     return time_string
+
+
+def get_log_path():
+    conf_path = get_root_path() + "/conf/platform.conf"
+    conf = configparser.ConfigParser()
+    conf.read(conf_path)
+    log_path = conf.get("logs", "log_path")
+    return log_path
