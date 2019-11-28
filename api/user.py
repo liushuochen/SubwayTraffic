@@ -134,6 +134,14 @@ def update_user(context):
             logger.debug("PUT /user/v1/modify/password - %s" % e.httpcode)
             return message, e.httpcode
 
+        logger.info("change user %s password success, check user login..." %
+                    username)
+        for sess in flask.session:
+            if flask.session[sess] == username:
+                flask.session.pop(sess)
+                logger.info("user %s logout after change password." % username)
+                break
+
         message = {"success": "change password success."}
         message = json.dumps(message)
         logger.debug("PUT /user/v1/modify/password - 200")

@@ -76,3 +76,7 @@ SubwayTraffic Platform v0.2.0.B060
 SubwayTraffic Platform v0.2.0.B070
     1、用户密码修改功能开发
     2、增加部分conductor日志
+
+SubwayTraffic Platform v0.2.0.B071
+    1、追加开发修改密码功能中，密码修改成功后用户退出。
+    2、更新接口文档，增加修改密码的接口描述。

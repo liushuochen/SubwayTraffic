@@ -23,9 +23,9 @@ stp_app.register_blueprint(user.user_blue)
 
 
 def init():
+    conductor.init()
     logs.init()
     db.init()
-    conductor.init()
 
 
 if __name__ == '__main__':

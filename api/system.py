@@ -144,6 +144,7 @@ def get_session():
 
     message = {"session": dict(flask.session)}
     logger.debug("GET /system/v1/session - 200")
+    logger.info("Get session: %s" % flask.session)
     return message, 200
 
 
@@ -201,3 +202,13 @@ def show_process():
     message = {"process": pro_list}
     message = json.dumps(message)
     return message, 200
+
+
+# @system_blue.route("/clearsession", methods=["GET"])
+# def clear_session():
+#     logger.info("inner clear session.. %s" % flask.session)
+#     conductor.system.clear_session(flask.session)
+#     logger.info("after clear session.. %s" % flask.session)
+#     message = {"success": "after clear %s" % flask.session}
+#     message = json.dumps(message)
+#     return message, 200
