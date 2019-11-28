@@ -163,8 +163,8 @@ def shutdown_servers():
     try:
         conductor.system.verify_user("admin", admin_password)
         logger.info("==========server shutdown==========")
-        while not conductor.process.empty():
-            pid = conductor.process.pop()
+        while not conductor.process_stack.empty():
+            pid = conductor.process_stack.pop()
             os.kill(pid, signal.SIGKILL)
 
     except STPHTTPException as e:
@@ -173,3 +173,31 @@ def shutdown_servers():
         logger.debug("GET /system/v1/shutdown - %s" % e.httpcode)
         logger.warn("try to shutdown server failed.")
         return message, e.httpcode
+
+
+@system_blue.route("/process", methods=["POST"])
+def show_process():
+    data = json.loads(flask.request.data)
+    admin_password = data.get("password", None)
+
+    token = flask.request.headers.get("token", None)
+    if (token not in flask.session) or (flask.session[token] != "admin"):
+        message = {"error": "server shutdown failed"}
+        message = json.dumps(message)
+        logger.warn("try to shutdown server failed.")
+        logger.debug("GET /system/v1/process - 401")
+        return message, 401
+
+    try:
+        conductor.system.verify_user("admin", admin_password)
+        pro_list = conductor.process_stack.show()
+    except STPHTTPException as e:
+        message = {"error": e.error_message}
+        message = json.dumps(message)
+        logger.debug("GET /system/v1/shutdown - %s" % e.httpcode)
+        logger.warn("try to shutdown server failed.")
+        return message, e.httpcode
+
+    message = {"process": pro_list}
+    message = json.dumps(message)
+    return message, 200

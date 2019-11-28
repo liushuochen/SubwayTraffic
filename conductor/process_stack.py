@@ -27,6 +27,9 @@ class Stack():
         else:
             return self.base.pop()
 
+    def show(self):
+        return self.base
+
 
 class ProStack(Stack):
     def push(self, process_id):

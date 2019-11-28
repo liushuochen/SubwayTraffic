@@ -67,3 +67,8 @@ SubwayTraffic Platform v0.2.0.B050
     1、解决前后端交互出现的跨域问题
     2、增加前端文件夹存放前端文件
     3、自动日志清理功能的开发
+
+SubwayTraffic Platform v0.2.0.B060
+    1、获取进程栈接口开发
+    2、修复多进程下进程栈无法获取子进程的bug
+    3、增加部分conductor、database日志

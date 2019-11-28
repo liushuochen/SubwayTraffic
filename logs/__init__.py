@@ -11,8 +11,8 @@ import os
 import util
 import time
 import datetime
+import conductor
 from multiprocessing import Process
-from conductor import process
 
 def init():
     sub_log_path = sub_logs()
@@ -22,14 +22,20 @@ def init():
         except FileExistsError:
             continue
 
-    pro = Process(target=auto_clear_log)
+    pro = Process(target=auto_clear_log, args=(conductor.process_queue,))
     pro.start()
+
+    child_pid = conductor.process_queue.get()
+    conductor.process_stack.push(child_pid)
 
     return
 
 
-def auto_clear_log():
-    process.push(os.getpid())
+def auto_clear_log(queue):
+    pid = os.getpid()
+    queue.put(pid)
+
+    # each 12 hours running once
     sleep_time = 12 * 3600
     while True:
         clear_logs()
@@ -52,7 +58,6 @@ def sub_logs():
 
 
 def clear_logs():
-    # TODO: get log create time. delete stale dated logs.
     sub_log_path = sub_logs()
     for dir in sub_log_path:
         try:

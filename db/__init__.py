@@ -9,7 +9,6 @@ Effect:             The SubwayTraffic Platform system database init
 
 import configparser
 import util
-import mysql.connector
 import conductor.system
 import db.engine
 from logs.logger import LOG
@@ -22,8 +21,7 @@ logger = LOG(
 )
 
 def init():
-    print("Begin to init database...")
-
+    logger.info("init database...")
     platform_conf_path = util.get_root_path() + "/conf/platform.conf"
     database_conf_path = util.get_root_path() + "/conf/database.conf"
     deploy_conf = configparser.ConfigParser()
@@ -44,7 +42,6 @@ def init():
         if deploy_type == "hard":
             pass
 
-    print("init database finished.")
     return
 
 
