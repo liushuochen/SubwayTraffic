@@ -11,6 +11,7 @@ import db.user
 import conductor.system
 import util
 from errors.HTTPcode import STPHTTPException, DBError
+from conductor import logger
 
 User_security_password_length = 8
 
@@ -21,6 +22,7 @@ def users():
             user_list.remove(user)
             break
 
+    logger.info("Get user list: %s" % user_list)
     return user_list
 
 
@@ -64,4 +66,17 @@ def destroy(username):
         db.user.drop_user(username)
     except DBError as e:
         raise STPHTTPException(e.error_message, e.error_code)
+    return
+
+
+def modify_user_pwd(username, password, new_password):
+    conductor.system.verify_user(username, password)
+
+    if len(new_password) < User_security_password_length:
+        logger.error("Change user %s password ERROR: Password length must more than"
+                     " 8." % username)
+        raise STPHTTPException("Password length must more than 8.", 403)
+
+    db.user.update_pwd(username, new_password)
+    logger.info("Change user %s password successful." % username)
     return

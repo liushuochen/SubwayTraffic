@@ -51,9 +51,9 @@ def register_user():
     username = data.get("username", None)
     password = data.get("password", None)
     if username is None or password is None:
-        message = {"error": "Badrequest: Invalid param"}
+        message = {"error": "BadRequest: Invalid param"}
         message = json.dumps(message)
-        logger.error("register user error: Badrequest: Invalid param.")
+        logger.error("register user error: BadRequest: Invalid param.")
         logger.debug("POST /user/v1/register - 400")
         return message, 400
 
@@ -78,7 +78,7 @@ def delete_user():
     data = json.loads(flask.request.data)
     username = data.get("username", None)
     if username is None:
-        message = {"error": "Badrequest: Invalid param"}
+        message = {"error": "BadRequest: Invalid param"}
         message = json.dumps(message)
         logger.debug("DELETE /user/v1/delete - 400")
         return message, 400
@@ -103,3 +103,42 @@ def delete_user():
     logger.debug("DELETE /user/v1/delete - 200")
     logger.info("user %s has been deleted." % username)
     return message, 200
+
+
+@user_blue.route("/modify/<context>", methods=["PUT"])
+def update_user(context):
+    if context == "username":
+        message = {"error": "can not change username."}
+        message = json.dumps(message)
+        logger.debug("PUT /user/v1/modify/username - 403")
+        return message, 403
+
+    elif context == "password":
+        data = json.loads(flask.request.data)
+        username = data.get("username", None)
+        password = data.get("password", None)
+        new_password = data.get("new_password", None)
+        if (username is None) or (password is None) or (new_password is None):
+            message = {"error": "BadRequest: Invalid param"}
+            message = json.dumps(message)
+            logger.debug("PUT /user/v1/modify/password - 400")
+            logger.error("modify user %s password ERROR: BadRequest: Invalid "
+                         "param." % username)
+            return message, 400
+
+        try:
+            conductor.user.modify_user_pwd(username, password, new_password)
+        except STPHTTPException as e:
+            message = {"error": e.error_message}
+            message = json.dumps(message)
+            logger.debug("PUT /user/v1/modify/password - %s" % e.httpcode)
+            return message, e.httpcode
+
+        message = {"success": "change password success."}
+        message = json.dumps(message)
+        logger.debug("PUT /user/v1/modify/password - 200")
+        return message, 200
+    else:
+        message = {"error": "unknown modify request - '%s'" % context}
+        message = json.dumps(message)
+        return message, 404

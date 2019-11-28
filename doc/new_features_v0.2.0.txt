@@ -72,3 +72,7 @@ SubwayTraffic Platform v0.2.0.B060
     1、获取进程栈接口开发
     2、修复多进程下进程栈无法获取子进程的bug
     3、增加部分conductor、database日志
+
+SubwayTraffic Platform v0.2.0.B070
+    1、用户密码修改功能开发
+    2、增加部分conductor日志
