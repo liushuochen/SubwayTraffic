@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet"/>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<style>
+			body{
+				background-color: #D0D0D0;
+			}
+			.appTitle{
+				font:italic 1em Georgia, serif;
+				font-size: 300%;
+				margin-top: 5%;
+				color: #856363;
+			}
+			.mui-input-group{
+				background-color: #FFFFFF;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="appTitle" align="center">
+			SubwayTraffic
+		</div>
+		<form class="mui-input-group" style="margin-top: 10%">
+			<div class="mui-input-row">
+				<label>用户名</label>
+			<input type="text" id="username" class="mui-input-clear" placeholder="请输入用户名">
+			</div>
+			<div class="mui-input-row">
+				<label>密码</label>
+				<input type="password" id="password" class="mui-input-password" placeholder="请输入密码">
+			</div>
+			<div class="mui-button-row">
+				<button type="button" style="float: left; width: 30%;" id="login" class="mui-btn mui-btn-success mui-btn-outlined" > 确认</button>
+				<button type="button" style="float: right;" id="forgetPwd" class="mui-btn mui-btn-warning mui-btn-outlined">忘记密码了？</button>
+			</div>
+		</form>
+	</body>
+	<script type="text/javascript" charset="utf-8">
+			mui.init();
+			$("#login").click(function () {
+				const uname = $("#username").val();
+				const password = $("#password").val();
+				$.ajax({
+					url: "http://192.168.0.105:9188/system/v1/login",
+					type: "post",
+					data: JSON.stringify({
+						"username": uname,
+						"password": password
+					}),
+					contentType: "application/json; charset=UTF-8",
+					dataType: "json",
+					success: function(response){
+						alert(JSON.stringify(response));
+					},
+					error: function(error){
+						alert(JSON.stringify(error.responseJSON));
+					}
+				});
+			});
+			$("#forgetPwd").click(function () {
+				window.location.href = "forgetPwd.html";
+			});
+	</script>
+</html>
