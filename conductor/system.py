@@ -12,7 +12,9 @@ import util
 import db.user as model
 import random
 import string
+import traceback
 from errors.HTTPcode import STPHTTPException, DBError
+from conductor import logger
 
 pools = string.ascii_letters + string.digits
 TOKEN_LENGTH = 10
@@ -23,6 +25,8 @@ def get_version():
     try:
         version = open(url, "r").read()
     except FileNotFoundError:
+        logger.error("get version failed. can not find version file.\n %s" %
+                     traceback.format_exc())
         raise STPHTTPException("can not found file: stp.version", 503)
     return version
 
