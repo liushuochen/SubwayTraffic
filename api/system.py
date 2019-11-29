@@ -14,6 +14,7 @@ import conductor.system
 import os
 import signal
 import conductor
+import traceback
 from api import logger
 from errors.HTTPcode import STPHTTPException
 
@@ -57,7 +58,16 @@ def get_version():
 
 @system_blue.route("/login", methods=["POST"])
 def login():
-    data = json.loads(flask.request.data)
+    try:
+        data = json.loads(flask.request.data)
+    except json.decoder.JSONDecodeError:
+        logger.error("login ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /system/v1/login - 406")
+        message = {"error": "invalid POST request: JSON decode failed."}
+        message = json.dumps(message)
+        return message, 406
+
     username = data.get("username", None)
     password = data.get("password", None)
     logger.info("user %s login..." % username)
