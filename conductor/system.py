@@ -47,8 +47,8 @@ def verify_user(post_username, post_password):
     try:
         _, password, token, _ = model.get_user_detail(post_username)
         if post_password != password:
+            logger.error("user %s can not login: Wrong username or password.")
             raise STPHTTPException("Wrong username or password.", 403)
-
         return token
     except DBError as e:
         raise STPHTTPException(e.error_message, e.error_code)

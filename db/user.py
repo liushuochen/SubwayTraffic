@@ -10,6 +10,7 @@ Effect:             The SubwayTraffic Platform system database driver.
 import util
 import db.engine
 from errors.HTTPcode import DBError
+from db import logger
 
 
 def get_all_user_detail():
@@ -36,6 +37,7 @@ def get_user_detail(username):
     cursor.execute(sql)
     data = cursor.fetchall()
     if not data:
+        logger.error("can not find user %s" % username)
         raise DBError("can not find user %s" % username, 404)
     user_details = data[0]
     engine.close()
