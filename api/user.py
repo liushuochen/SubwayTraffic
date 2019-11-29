@@ -9,6 +9,7 @@ Effect:             The SubwayTraffic Platform system api for user.
 
 import flask
 import json
+import traceback
 import conductor.user
 from errors.HTTPcode import STPHTTPException
 from api import logger
@@ -47,7 +48,16 @@ def user_list():
 
 @user_blue.route("/register", methods=["POST"])
 def register_user():
-    data = json.loads(flask.request.data)
+    try:
+        data = json.loads(flask.request.data)
+    except json.decoder.JSONDecodeError:
+        logger.error("register user ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /user/v1/register - 406")
+        message = {"error": "invalid POST request: JSON decode failed."}
+        message = json.dumps(message)
+        return message, 406
+
     username = data.get("username", None)
     password = data.get("password", None)
     if username is None or password is None:
