@@ -44,7 +44,7 @@ def get_version():
     try:
         version = (conductor.system.get_version()).strip()
     except STPHTTPException as e:
-        message = {"version": "None", "error": e.error_message}
+        message = {"version": None, "error": e.error_message}
         message = json.dumps(message)
         logger.debug("GET /system/v1/version - %s" % e.httpcode)
         return message, e.httpcode
