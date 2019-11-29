@@ -188,7 +188,16 @@ def shutdown_servers():
 
 @system_blue.route("/process", methods=["POST"])
 def show_process():
-    data = json.loads(flask.request.data)
+    try:
+        data = json.loads(flask.request.data)
+    except json.decoder.JSONDecodeError:
+        logger.error("get process list ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /system/v1/process - 406")
+        message = {"error": "invalid POST request: JSON decode failed."}
+        message = json.dumps(message)
+        return message, 406
+
     admin_password = data.get("password", None)
 
     token = flask.request.headers.get("token", None)
@@ -212,13 +221,3 @@ def show_process():
     message = {"process": pro_list}
     message = json.dumps(message)
     return message, 200
-
-
-# @system_blue.route("/clearsession", methods=["GET"])
-# def clear_session():
-#     logger.info("inner clear session.. %s" % flask.session)
-#     conductor.system.clear_session(flask.session)
-#     logger.info("after clear session.. %s" % flask.session)
-#     message = {"success": "after clear %s" % flask.session}
-#     message = json.dumps(message)
-#     return message, 200

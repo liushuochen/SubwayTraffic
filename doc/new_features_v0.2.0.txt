@@ -87,3 +87,6 @@ SubwayTraffic Platform v0.2.0.B080
         一致的问题。
     2、修复登录bug：下发的请求为错误的json格式时，服务器无法解析json而导致报错的问题。
     3、增加部分日志。
+
+SubwayTraffic Platform v0.2.0.B090
+    1、修复获取进程列表bug: 下发的请求为错误的json格式时，服务器无法解析json而导致报错的问题。
