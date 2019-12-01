@@ -178,7 +178,7 @@ def show_process():
     if (token not in flask.session) or (flask.session[token] != "admin"):
         message = {"error": "server shutdown failed"}
         message = json.dumps(message)
-        logger.warn("try to shutdown server failed.")
+        logger.warn("try to get process list failed.")
         logger.debug("GET /system/v1/process - 401")
         return message, 401
 
@@ -189,9 +189,11 @@ def show_process():
         message = {"error": e.error_message}
         message = json.dumps(message)
         logger.debug("GET /system/v1/shutdown - %s" % e.httpcode)
-        logger.warn("try to shutdown server failed.")
+        logger.warn("try to get process list failed.")
         return message, e.httpcode
 
     message = {"process": pro_list}
     message = json.dumps(message)
+    logger.debug("GET /system/v1/process - 200")
+    logger.warn("get process list.")
     return message, 200
