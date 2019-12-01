@@ -100,3 +100,4 @@ SubwayTraffic Platform v0.3.0.RC1.B010
     1、删除关闭服务功能（/system/v1/shutdown）
     2、获取版本号 /system/v1/version 返回json中增加http状态码
     3、增加获取进程栈信息 /system/v1/process 部分日志
+    4、更新获取版本号 /system/v1/version 接口文档，适配返回json变更
