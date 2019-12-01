@@ -106,3 +106,4 @@ SubwayTraffic Platform v0.3.0.RC1.B010
 
 SubwayTraffic Platform v0.3.0.RC1.B020
     1、增加地铁线路功能开发
+    2、修复修改用户bug：下发的请求为错误的json格式时，服务器无法解析json而导致报错的问题。

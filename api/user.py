@@ -91,7 +91,7 @@ def delete_user():
         logger.error("delete user ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("DELETE /user/v1/delete - 406")
-        message = {"error": "invalid POST request: JSON decode failed."}
+        message = {"error": "invalid DELETE request: JSON decode failed."}
         message = json.dumps(message)
         return message, 406
 
@@ -126,6 +126,16 @@ def delete_user():
 
 @user_blue.route("/modify/<context>", methods=["PUT"])
 def update_user(context):
+    try:
+        data = json.loads(flask.request.data)
+    except json.decoder.JSONDecodeError:
+        logger.error("modify user ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("PUT /user/v1/modify/%s - 406" % context)
+        message = {"error": "invalid PUT request: JSON decode failed."}
+        message = json.dumps(message)
+        return message, 406
+
     if context == "username":
         message = {"error": "can not change username."}
         message = json.dumps(message)
@@ -133,7 +143,6 @@ def update_user(context):
         return message, 403
 
     elif context == "password":
-        data = json.loads(flask.request.data)
         username = data.get("username", None)
         password = data.get("password", None)
         new_password = data.get("new_password", None)
