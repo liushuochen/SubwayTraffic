@@ -11,8 +11,6 @@ Effect:             The SubwayTraffic Platform system api for system
 import flask
 import json
 import conductor.system
-import os
-import signal
 import conductor
 import traceback
 from api import logger
@@ -37,7 +35,11 @@ def after_request(resp):
 def get_version():
     token = flask.request.headers.get("token", None)
     if token not in flask.session:
-        message = {"version": None, "error": "limited authority"}
+        message = {
+            "version": None,
+            "error": "limited authority",
+            "code": 401
+        }
         message = json.dumps(message)
         logger.debug("GET /system/v1/version - 401")
         return message, 401
@@ -45,12 +47,12 @@ def get_version():
     try:
         version = (conductor.system.get_version()).strip()
     except STPHTTPException as e:
-        message = {"version": None, "error": e.error_message}
+        message = {"version": None, "error": e.error_message, "code": e.httpcode}
         message = json.dumps(message)
         logger.debug("GET /system/v1/version - %s" % e.httpcode)
         return message, e.httpcode
 
-    message = {"version": version}
+    message = {"version": version, "code": 200}
     message = json.dumps(message)
     logger.debug("GET /system/v1/version - 200")
     return message, 200
