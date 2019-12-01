@@ -101,3 +101,8 @@ SubwayTraffic Platform v0.3.0.RC1.B010
     2、获取版本号 /system/v1/version 返回json中增加http状态码
     3、增加获取进程栈信息 /system/v1/process 部分日志
     4、更新获取版本号 /system/v1/version 接口文档，适配返回json变更
+    5、修复删除用户bug：下发的请求为错误的json格式时，服务器无法解析json而导致报错的问题。
+    6、接口文档中增加删除用户返回值406描述
+
+SubwayTraffic Platform v0.3.0.RC1.B020
+    1、增加地铁线路功能开发

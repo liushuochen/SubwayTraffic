@@ -12,6 +12,7 @@ import configparser
 import datetime
 import api.system as system
 import api.user as user
+import api.line as line
 import db
 import logs
 import conductor
@@ -20,6 +21,7 @@ from api import logger
 stp_app = flask.Flask("SubwayTraffic")
 stp_app.register_blueprint(system.system_blue)
 stp_app.register_blueprint(user.user_blue)
+stp_app.register_blueprint(line.line_blue)
 
 
 def init():

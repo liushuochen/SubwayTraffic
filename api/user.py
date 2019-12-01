@@ -85,7 +85,16 @@ def register_user():
 
 @user_blue.route("/delete", methods=["DELETE"])
 def delete_user():
-    data = json.loads(flask.request.data)
+    try:
+        data = json.loads(flask.request.data)
+    except json.decoder.JSONDecodeError:
+        logger.error("delete user ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("DELETE /user/v1/delete - 406")
+        message = {"error": "invalid POST request: JSON decode failed."}
+        message = json.dumps(message)
+        return message, 406
+
     username = data.get("username", None)
     if username is None:
         message = {"error": "BadRequest: Invalid param"}

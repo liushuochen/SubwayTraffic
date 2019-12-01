@@ -38,10 +38,25 @@ def init():
     tables = get_all_tables(db_name)
     if "user" not in tables:
         create_user_table(deploy_conf)
+    elif "subway_line" not in tables:
+        create_subway_line_table()
     else:
         if deploy_type == "hard":
             pass
 
+    return
+
+
+def create_subway_line_table():
+    engine, cursor = db.engine.get_engine()
+    sql = """
+    create table subway_line(
+    uuid  char(27) not null,
+    name  varchar(10) not null
+    ) charset utf8
+    """
+    cursor.execute(sql)
+    engine.close()
     return
 
 
