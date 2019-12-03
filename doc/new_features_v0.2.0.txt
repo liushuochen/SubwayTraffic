@@ -112,3 +112,4 @@ SubwayTraffic Platform v0.3.0.RC1.B020
 SubwayTraffic Platform v0.3.0.RC1.B030
     1、删除地铁线路功能开发
     2、错误类型重写__str__()方法
+    3、登录功能的返回json中增加code值

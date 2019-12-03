@@ -66,7 +66,10 @@ def login():
         logger.error("login ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("POST /system/v1/login - 406")
-        message = {"error": "invalid POST request: JSON decode failed."}
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406
+        }
         message = json.dumps(message)
         return message, 406
 
@@ -77,7 +80,8 @@ def login():
         message = {
             "login": False,
             "token": None,
-            "error": "BadRequest: Invalid username or password."
+            "error": "BadRequest: Invalid username or password.",
+            "code": 400
         }
         message = json.dumps(message)
         logger.error("user %s login ERROR: Invalid username or password."
@@ -94,7 +98,8 @@ def login():
         message = {
             "login": False,
             "token": None,
-            "error": e.error_message
+            "error": e.error_message,
+            "code": e.httpcode
         }
         message = json.dumps(message)
         logger.error("user %s login ERROR: %s." % (username, e.error_message))
@@ -104,6 +109,7 @@ def login():
     message = {
         "login": True,
         "token": token,
+        "code": 200
     }
     message = json.dumps(message)
     flask.session.permanent = True
