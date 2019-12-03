@@ -33,3 +33,12 @@ def add_subway_line(uuid, name):
     engine.commit()
     engine.close()
     return
+
+
+def drop_subway_line(uuid):
+    engine, cursor = db.engine.get_engine()
+    sql = "delete from subway_line where uuid=\"%s\"" % uuid
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
+    return

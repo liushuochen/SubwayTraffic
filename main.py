@@ -27,6 +27,9 @@ stp_app.register_blueprint(line.line_blue)
 def init():
     conductor.init()
     logs.init()
+
+    # if host mysql server do not start, db.init() will raise
+    # mysql.connector.errors.InterfaceError.
     db.init()
 
 

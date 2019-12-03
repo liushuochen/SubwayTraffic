@@ -11,9 +11,21 @@ import util
 import db.line
 from errors.HTTPcode import STPHTTPException
 
+def line_exist(param, model):
+    lines = db.line.subway_list()
+    models = {"name", "uuid"}
+    if model not in models:
+        raise TypeError("Invalid model type %s." % model)
+
+    for line in lines:
+        if line[model] == param:
+            return True
+    return False
+
+
 def add_subway_line(subway_line_name):
-    if line_exit(subway_line_name):
-        raise STPHTTPException("subway line %s has been exit." % subway_line_name,
+    if line_exist(subway_line_name, "name"):
+        raise STPHTTPException("subway line %s has been exist." % subway_line_name,
                                403)
 
     uuid = util.generate_uuid(uuid_type="upper")
@@ -21,9 +33,9 @@ def add_subway_line(subway_line_name):
     return
 
 
-def line_exit(name):
-    lines = db.line.subway_list()
-    for line in lines:
-        if line["name"] == name:
-            return True
-    return False
+
+def delete_subway_line(uuid):
+    if not line_exist(uuid, "uuid"):
+        raise STPHTTPException("subway %s has not exist." % uuid, 404)
+    db.line.drop_subway_line(uuid)
+    return

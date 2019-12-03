@@ -24,6 +24,9 @@ class STPHTTPException(Exception):
     def httpcode(self):
         return self.__code
 
+    def __str__(self):
+        return self.error_message
+
 
 class DBError(Exception):
     def __init__(self, message, code):
@@ -41,3 +44,6 @@ class DBError(Exception):
     @ property
     def error_code(self):
         return self.__code
+
+    def __str__(self):
+        return self.error_message
