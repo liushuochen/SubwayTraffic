@@ -203,3 +203,11 @@ def update_line(context):
         }
         message = json.dumps(message)
         return message, 404
+
+
+@line_blue.route("/list", methods=["GET"])
+def line_list():
+    lines = conductor.line.get_all_line()
+    message = {"line": lines, "code": 200}
+    message = json.dumps(message)
+    return message, 200

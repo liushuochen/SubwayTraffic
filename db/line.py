@@ -52,3 +52,17 @@ def update_subway_line(uuid, name):
     engine.commit()
     engine.close()
     return
+
+
+def line_list():
+    lines = []
+    engine, cursor = db.engine.get_engine()
+    sql = "select * from subway_line"
+    cursor.execute(sql)
+    db_data = cursor.fetchall()
+    for temp_data in db_data:
+        pre_data = {}
+        pre_data["uuid"] = temp_data[0]
+        pre_data["name"] = temp_data[1]
+        lines.append(pre_data)
+    return lines

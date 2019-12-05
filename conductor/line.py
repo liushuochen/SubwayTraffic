@@ -51,3 +51,7 @@ def update_line(**kwargs):
 
     db.line.update_subway_line(uuid, name)
     return
+
+
+def get_all_line():
+    return db.line.line_list()
