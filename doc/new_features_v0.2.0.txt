@@ -123,3 +123,4 @@ SubwayTraffic Platform v0.3.0.RC1.B040
 SubwayTraffic Platform v0.3.0.RC1.B050
     1、获取全部地铁线路列表功能开发
     2、获取session功能 /system/v1/session 的返回json中增加code值
+    3、接口文档适配B050版本需求和问题修复
