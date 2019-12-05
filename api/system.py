@@ -155,13 +155,13 @@ def logout():
 def get_session():
     token = flask.request.headers.get("token", None)
     if (token not in flask.session) or (flask.session[token] != "admin"):
-        message = {"error": "limited authority"}
+        message = {"error": "limited authority", "code": 401}
         message = json.dumps(message)
         logger.warn("Can not get session: limited authority!")
         logger.debug("GET /system/v1/session - 401")
         return message, 401
 
-    message = {"session": dict(flask.session)}
+    message = {"session": dict(flask.session), "code": 200}
     logger.debug("GET /system/v1/session - 200")
     logger.info("Get session: %s" % flask.session)
     return message, 200
