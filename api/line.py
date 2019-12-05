@@ -138,3 +138,68 @@ def delete_line():
     }
     message = json.dumps(message)
     return message, 200
+
+
+@line_blue.route("/modify/<context>", methods=["PUT"])
+def update_line(context):
+    try:
+        data = json.loads(flask.request.data)
+    except json.decoder.JSONDecodeError:
+        logger.error("modify subway line ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("PUT /line/v1/modify/%s - 406" % context)
+        message = {"error": "invalid PUT request: JSON decode failed.", "code": 406}
+        message = json.dumps(message)
+        return message, 406
+
+    token = flask.request.headers.get("token", None)
+    if (token not in flask.session) or (flask.session[token] != "admin"):
+        message = {"error": "limited authority", "code": 401}
+        message = json.dumps(message)
+        logger.warn("update subway line WARNING: limited authority.")
+        logger.debug("PUT /line/v1/modify/%s - 401" % context)
+        return message, 401
+
+    if context == "name":
+        uuid = data.get("uuid", None)
+        new_name = data.get("name", None)
+        if uuid is None or new_name is None:
+            message = {
+                "error": "BadRequest: Invalid param.",
+                "code": 400
+            }
+            message = json.dumps(message)
+            logger.debug("PUT /line/v1/modify/%s - 406" % context)
+            logger.error("update subway line ERROR: BadRequest: Invalid param.")
+            return message, 400
+
+        try:
+            param = {
+                "uuid": uuid,
+                "name": new_name
+            }
+            conductor.line.update_line(**param)
+        except STPHTTPException as e:
+            message = {
+                "error": e.error_message,
+                "code": e.httpcode
+            }
+            message = json.dumps(message)
+            logger.error("update subway line %s name ERROR:\n%s"
+                         % (uuid, traceback.format_exc()))
+            logger.debug("PUT /line/v1/modify/name - %s" % e.httpcode)
+            return message, e.httpcode
+
+        message = {
+            "success": "update subway line %s success." % uuid,
+            "code": 200
+        }
+        message = json.dumps(message)
+        return message, 200
+    else:
+        message = {
+            "error": "unknown modify request - '%s'" % context,
+            "code": 404
+        }
+        message = json.dumps(message)
+        return message, 404

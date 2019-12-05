@@ -127,7 +127,8 @@ def logout():
     if username is None:
         message = {
             "logout": False,
-            "error": "BadRequest: Invalid username."
+            "error": "BadRequest: Invalid username.",
+            "code": 400
         }
         message = json.dumps(message)
         logger.error("Invalid user logout.")
@@ -136,14 +137,14 @@ def logout():
 
     token = flask.request.headers.get("token", None)
     if token not in flask.session:
-        message = {"logout": False, "error": "limited authority"}
+        message = {"logout": False, "error": "limited authority.", "code": 401}
         message = json.dumps(message)
         logger.warn("Can not logout user %s: limited authority!" % username)
         logger.debug("GET /system/v1/logout - 401")
         return message, 401
 
     flask.session.pop(token)
-    message = {"logout": True}
+    message = {"logout": True, "code": 200}
     message = json.dumps(message)
     logger.info("user %s logout success." % username)
     logger.debug("GET /system/v1/logout - 200")
