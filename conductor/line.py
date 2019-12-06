@@ -55,3 +55,15 @@ def update_line(**kwargs):
 
 def get_all_line():
     return db.line.line_list()
+
+
+def details(uuid):
+    lines = get_all_line()
+    for line in lines:
+        if line["uuid"] == uuid:
+            target = line
+            break
+    else:
+        raise STPHTTPException("can not find subway line %s" % uuid, 404)
+
+    return target

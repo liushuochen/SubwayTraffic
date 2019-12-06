@@ -210,4 +210,29 @@ def line_list():
     lines = conductor.line.get_all_line()
     message = {"line": lines, "code": 200}
     message = json.dumps(message)
+    logger.debug("GET /line/v1/list - 200")
+    return message, 200
+
+
+@line_blue.route("/detail/<uuid>", methods=["GET"])
+def line_detail(uuid):
+    try:
+        detail = conductor.line.details(uuid)
+    except STPHTTPException as e:
+        message = {
+            "line": None,
+            "error": e.error_message,
+            "code": e.httpcode
+        }
+        message = json.dumps(message)
+        logger.debug("GET /line/v1/detail/%s - %s" % (uuid, e.httpcode))
+        logger.error("Get subway line %s detail ERROR: %s." % (uuid, e.error_message))
+        return message, e.httpcode
+
+    message = {
+        "line": detail,
+        "code": 200
+    }
+    message = json.dumps(message)
+    logger.debug("GET /line/v1/detail/%s - 200" % uuid)
     return message, 200
