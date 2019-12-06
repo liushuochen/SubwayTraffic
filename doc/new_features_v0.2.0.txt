@@ -127,3 +127,4 @@ SubwayTraffic Platform v0.3.0.RC1.B050
 
 SubwayTraffic Platform v0.3.0.RC1.B060
     1、获取指定地铁线路信息功能开发
+    2、获取进程栈功能 /system/v1/process 的返回json中增加code值

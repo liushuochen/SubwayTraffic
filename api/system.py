@@ -175,7 +175,10 @@ def show_process():
         logger.error("get process list ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("POST /system/v1/process - 406")
-        message = {"error": "invalid POST request: JSON decode failed."}
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406
+        }
         message = json.dumps(message)
         return message, 406
 
@@ -183,7 +186,7 @@ def show_process():
 
     token = flask.request.headers.get("token", None)
     if (token not in flask.session) or (flask.session[token] != "admin"):
-        message = {"error": "server shutdown failed"}
+        message = {"error": "server shutdown failed", "code": 401}
         message = json.dumps(message)
         logger.warn("try to get process list failed.")
         logger.debug("GET /system/v1/process - 401")
@@ -193,13 +196,13 @@ def show_process():
         conductor.system.verify_user("admin", admin_password)
         pro_list = conductor.process_stack.show()
     except STPHTTPException as e:
-        message = {"error": e.error_message}
+        message = {"error": e.error_message, "code": e.httpcode}
         message = json.dumps(message)
         logger.debug("GET /system/v1/shutdown - %s" % e.httpcode)
         logger.warn("try to get process list failed.")
         return message, e.httpcode
 
-    message = {"process": pro_list}
+    message = {"process": pro_list, "code": 200}
     message = json.dumps(message)
     logger.debug("GET /system/v1/process - 200")
     logger.warn("get process list.")
