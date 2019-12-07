@@ -11,6 +11,7 @@ import flask
 import json
 import traceback
 import conductor.user
+import util
 from errors.HTTPcode import STPHTTPException
 from api import logger
 
@@ -32,7 +33,7 @@ def after_request(resp):
 @user_blue.route("/users", methods=["GET"])
 def user_list():
     token = flask.request.headers.get("token", None)
-    if token not in flask.session or flask.session[token] != "admin":
+    if token not in util.session or util.session[token] != "admin":
         message = {"users": [], "error": "limited authority"}
         message = json.dumps(message)
         logger.debug("GET /user/v1/users - 401")
@@ -103,7 +104,7 @@ def delete_user():
         return message, 400
 
     token = flask.request.headers.get("token", None)
-    if (token not in flask.session) or (flask.session[token] != "admin"):
+    if (token not in util.session) or (util.session[token] != "admin"):
         message = {"error": "limited authority"}
         message = json.dumps(message)
         logger.debug("DELETE /user/v1/delete - 401")
@@ -164,9 +165,9 @@ def update_user(context):
 
         logger.info("change user %s password success, check user login..." %
                     username)
-        for sess in flask.session:
-            if flask.session[sess] == username:
-                flask.session.pop(sess)
+        for sess in util.session:
+            if util.session[sess] == username:
+                util.session.pop(sess)
                 logger.info("user %s logout after change password." % username)
                 break
 

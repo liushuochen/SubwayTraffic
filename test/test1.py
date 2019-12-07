@@ -1,5 +1,8 @@
 import util
 
 if __name__ == '__main__':
-    uuid = util.generate_uuid(uuid_type="lowers")
-    print(uuid)
+    a = {}
+    a["123"] = "admin"
+    print(a)
+    a.pop("123")
+    print(a)

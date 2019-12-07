@@ -13,6 +13,7 @@ import json
 import conductor.system
 import conductor
 import traceback
+import util
 from api import logger
 from errors.HTTPcode import STPHTTPException
 
@@ -34,7 +35,7 @@ def after_request(resp):
 @system_blue.route("/version", methods=["GET"])
 def get_version():
     token = flask.request.headers.get("token", None)
-    if token not in flask.session:
+    if token not in util.session:
         message = {
             "version": None,
             "error": "limited authority",
@@ -91,8 +92,8 @@ def login():
 
     try:
         token = conductor.system.verify_user(username, password)
-        for history_token in flask.session:
-            if flask.session[history_token] == username:
+        for history_token in util.session:
+            if util.session[history_token] == username:
                 raise STPHTTPException("User logged in.", 403)
     except STPHTTPException as e:
         message = {
@@ -112,8 +113,7 @@ def login():
         "code": 200
     }
     message = json.dumps(message)
-    flask.session.permanent = True
-    flask.session[token] = username
+    util.session[token] = username
     conductor.system.update_token(username)
     logger.info("user %s login success." % username)
     logger.debug("POST /system/v1/login - 200")
@@ -136,14 +136,14 @@ def logout():
         return message, 400
 
     token = flask.request.headers.get("token", None)
-    if token not in flask.session:
+    if token not in util.session:
         message = {"logout": False, "error": "limited authority.", "code": 401}
         message = json.dumps(message)
         logger.warn("Can not logout user %s: limited authority!" % username)
         logger.debug("GET /system/v1/logout - 401")
         return message, 401
 
-    flask.session.pop(token)
+    util.session.pop(token)
     message = {"logout": True, "code": 200}
     message = json.dumps(message)
     logger.info("user %s logout success." % username)
@@ -154,16 +154,16 @@ def logout():
 @system_blue.route("/session", methods=["GET"])
 def get_session():
     token = flask.request.headers.get("token", None)
-    if (token not in flask.session) or (flask.session[token] != "admin"):
+    if (token not in util.session) or (util.session[token] != "admin"):
         message = {"error": "limited authority", "code": 401}
         message = json.dumps(message)
         logger.warn("Can not get session: limited authority!")
         logger.debug("GET /system/v1/session - 401")
         return message, 401
 
-    message = {"session": dict(flask.session), "code": 200}
+    message = {"session": util.session, "code": 200}
     logger.debug("GET /system/v1/session - 200")
-    logger.info("Get session: %s" % flask.session)
+    logger.info("Get session: %s" % util.session)
     return message, 200
 
 
@@ -185,7 +185,7 @@ def show_process():
     admin_password = data.get("password", None)
 
     token = flask.request.headers.get("token", None)
-    if (token not in flask.session) or (flask.session[token] != "admin"):
+    if (token not in util.session) or (util.session[token] != "admin"):
         message = {"error": "server shutdown failed", "code": 401}
         message = json.dumps(message)
         logger.warn("try to get process list failed.")

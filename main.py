@@ -9,7 +9,6 @@ Effect:             The SubwayTraffic Platform system entrance.
 
 import flask
 import configparser
-import datetime
 import api.system as system
 import api.user as user
 import api.line as line
@@ -38,10 +37,6 @@ if __name__ == '__main__':
     conf.read("conf/platform.conf")
     host = conf.get("system", "host")
     port = conf.get("system", "port")
-    session_key = conf.get("system", "session_key")
-
-    stp_app.secret_key = session_key
-    stp_app.permanent_session_lifetime = datetime.timedelta(hours=1)
 
     init()
 

@@ -13,6 +13,10 @@ import configparser
 import random
 import string
 
+
+session = {}
+
+
 def get_root_path():
     url_list = (os.path.abspath("")).split("/")
     url = ""

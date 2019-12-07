@@ -11,6 +11,7 @@ import flask
 import json
 import traceback
 import conductor.line
+import util
 from api import logger
 from errors.HTTPcode import STPHTTPException
 
@@ -42,7 +43,7 @@ def add_line():
         return message, 406
 
     token = flask.request.headers.get("token", None)
-    if (token not in flask.session) or (flask.session[token] != "admin"):
+    if (token not in util.session) or (util.session[token] != "admin"):
         message = {"error": "limited authority", "code": 401}
         message = json.dumps(message)
         logger.warn("add subway line WARNING: limited authority.")
@@ -99,7 +100,7 @@ def delete_line():
         return message, 406
 
     token = flask.request.headers.get("token", None)
-    if (token not in flask.session) or (flask.session[token] != "admin"):
+    if (token not in util.session) or (util.session[token] != "admin"):
         message = {"error": "limited authority", "code": 401}
         message = json.dumps(message)
         logger.warn("delete subway line WARNING: limited authority.")
@@ -153,7 +154,7 @@ def update_line(context):
         return message, 406
 
     token = flask.request.headers.get("token", None)
-    if (token not in flask.session) or (flask.session[token] != "admin"):
+    if (token not in util.session) or (util.session[token] != "admin"):
         message = {"error": "limited authority", "code": 401}
         message = json.dumps(message)
         logger.warn("update subway line WARNING: limited authority.")
