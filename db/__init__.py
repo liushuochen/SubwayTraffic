@@ -20,6 +20,8 @@ logger = LOG(
     name="database"
 )
 
+Admin = "admin"
+
 def init():
     logger.info("init database...")
     platform_conf_path = util.get_root_path() + "/conf/platform.conf"
@@ -38,11 +40,10 @@ def init():
     tables = get_all_tables(db_name)
     if "user" not in tables:
         create_user_table(deploy_conf)
-    elif "subway_line" not in tables:
+
+    if "subway_line" not in tables:
         create_subway_line_table()
-    else:
-        if deploy_type == "hard":
-            pass
+
 
     return
 
@@ -64,22 +65,28 @@ def create_user_table(config):
     engine, cursor = db.engine.get_engine()
     sql = """
     create table user(
-    username    varchar(23) not null,
+    uuid        char(27) not null,
+    email       varchar(30) not null,
+    username    varchar(24) not null,
     password    varchar(18) not null,
     token       char(10) not null,
+    user_type        enum("admin", "user") not null default "user",
     create_time datetime not null
     ) charset utf8
     """
     cursor.execute(sql)
 
     # add admin user
+    uuid = util.generate_uuid()
     admin_user = config.get("deploy", "admin_user")
     admin_pwd = config.get("deploy", "admin_pwd")
+    email = config.get("deploy", "admin_email")
     now = util.get_time_string_format()
     token = conductor.system.general_token()
-    sql = "insert into user(username, password, create_time, token) " \
-          "values(%s, %s, %s, %s)"
-    val = (admin_user, admin_pwd, now, token)
+    user_type = Admin
+    sql = "insert into user " \
+          "values(%s, %s, %s, %s, %s, %s, %s)"
+    val = (uuid, email, admin_user, admin_pwd, token, user_type, now)
     cursor.execute(sql, val)
     engine.commit()
     engine.close()

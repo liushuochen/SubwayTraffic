@@ -34,14 +34,14 @@ def after_request(resp):
 def user_list():
     token = flask.request.headers.get("token", None)
     if token not in util.session or util.session[token] != "admin":
-        message = {"users": [], "error": "limited authority"}
+        message = {"users": [], "error": "limited authority", "code": 401}
         message = json.dumps(message)
         logger.debug("GET /user/v1/users - 401")
         logger.warn("Can not get user list info: limited authority.")
         return message, 401
 
     users = conductor.user.users()
-    message = {"users": users}
+    message = {"users": users, "code": 200}
     message = json.dumps(message)
     logger.debug("GET /user/v1/users - 200")
     return message, 200

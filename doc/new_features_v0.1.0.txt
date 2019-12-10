@@ -130,4 +130,9 @@ SubwayTraffic Platform v0.3.0.RC1.B060
     2、获取进程栈功能 /system/v1/process 的返回json中增加code值
     3、修复页面用户可重复登录的bug
     4、修改用户登录策略：用户输入错误的密码后，返回值404
-    5、删除接口文档。（后续接口文档开发移步于石墨文档中）
+    5、删除接口文档（后续接口文档开发移步于石墨文档中）
+
+SubwayTraffic Platform v0.3.0.RC1.B070
+    1、修改user表结构：增加uuid、email、user_type字段，扩充username长度
+    2、修复数据库初始化过程中可能不会创建subway_line表的bug
+    3、增加获取用户列表接口 /user/v1/users 的返回json中增加code值
