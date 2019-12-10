@@ -122,31 +122,19 @@ def login():
 
 @system_blue.route("/logout", methods=["GET"])
 def logout():
-    username = flask.request.args.get("username", None)
-    logger.info("user %s logout..." % username)
-    if username is None:
-        message = {
-            "logout": False,
-            "error": "BadRequest: Invalid username.",
-            "code": 400
-        }
-        message = json.dumps(message)
-        logger.error("Invalid user logout.")
-        logger.debug("GET /system/v1/logout - 400")
-        return message, 400
-
     token = flask.request.headers.get("token", None)
     if token not in util.session:
         message = {"logout": False, "error": "limited authority.", "code": 401}
         message = json.dumps(message)
-        logger.warn("Can not logout user %s: limited authority!" % username)
+        logger.warn("unknown user logout.")
         logger.debug("GET /system/v1/logout - 401")
         return message, 401
 
+    email = util.session[token]
     util.session.pop(token)
     message = {"logout": True, "code": 200}
     message = json.dumps(message)
-    logger.info("user %s logout success." % username)
+    logger.info("user %s logout success." % email)
     logger.debug("GET /system/v1/logout - 200")
     return message, 200
 

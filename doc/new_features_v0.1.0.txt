@@ -139,3 +139,4 @@ SubwayTraffic Platform v0.3.0.RC1.B070
 
 SubwayTraffic Platform v0.3.0.RC1.B080
     1、登录功能适配v0.3.0.RC1.B070user表改动
+    2、退出功能适配v0.3.0.RC1.B070user表改动
