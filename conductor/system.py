@@ -37,18 +37,21 @@ def get_token(username):
     return token
 
 
-def update_token(username):
+def update_token(email):
     new_token = general_token()
-    model.update_token(username, new_token)
+    model.update_token(email, new_token)
     return
 
 
-def verify_user(post_username, post_password):
+def verify_user(post_email, post_password):
     try:
-        _, password, token, _ = model.get_user_detail(post_username)
+        detail = model.get_user_detail(post_email)
+        password = detail[3]
+        token = detail[4]
         if post_password != password:
-            logger.error("user %s can not login: Wrong username or password.")
-            raise STPHTTPException("Wrong username or password.", 404)
+            logger.error("user %s can not login: Wrong email or password." %
+                         post_email)
+            raise STPHTTPException("Wrong email or password.", 404)
         return token
     except DBError as e:
         raise STPHTTPException(e.error_message, e.error_code)

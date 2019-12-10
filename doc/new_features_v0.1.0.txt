@@ -136,3 +136,6 @@ SubwayTraffic Platform v0.3.0.RC1.B070
     1、修改user表结构：增加uuid、email、user_type字段，扩充username长度
     2、修复数据库初始化过程中可能不会创建subway_line表的bug
     3、增加获取用户列表接口 /user/v1/users 的返回json中增加code值
+
+SubwayTraffic Platform v0.3.0.RC1.B080
+    1、登录功能适配v0.3.0.RC1.B070user表改动

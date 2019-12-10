@@ -74,26 +74,26 @@ def login():
         message = json.dumps(message)
         return message, 406
 
-    username = data.get("username", None)
+    email = data.get("email", None)
     password = data.get("password", None)
-    logger.info("user %s login..." % username)
-    if (username is None) or (password is None):
+    logger.info("user %s login..." % email)
+    if (email is None) or (password is None):
         message = {
             "login": False,
             "token": None,
-            "error": "BadRequest: Invalid username or password.",
+            "error": "BadRequest: Invalid email or password.",
             "code": 400
         }
         message = json.dumps(message)
-        logger.error("user %s login ERROR: Invalid username or password."
-                     % username)
+        logger.error("user %s login ERROR: Invalid email or password."
+                     % email)
         logger.debug("POST /system/v1/login - 400")
         return message, 400
 
     try:
-        token = conductor.system.verify_user(username, password)
+        token = conductor.system.verify_user(email, password)
         for history_token in util.session:
-            if util.session[history_token] == username:
+            if util.session[history_token] == email:
                 raise STPHTTPException("User logged in.", 403)
     except STPHTTPException as e:
         message = {
@@ -103,7 +103,7 @@ def login():
             "code": e.httpcode
         }
         message = json.dumps(message)
-        logger.error("user %s login ERROR: %s." % (username, e.error_message))
+        logger.error("user %s login ERROR: %s." % (email, e.error_message))
         logger.debug("POST /system/v1/login - %s" % e.httpcode)
         return message, e.httpcode
 
@@ -113,9 +113,9 @@ def login():
         "code": 200
     }
     message = json.dumps(message)
-    util.session[token] = username
-    conductor.system.update_token(username)
-    logger.info("user %s login success." % username)
+    util.session[token] = email
+    conductor.system.update_token(email)
+    logger.info("user %s login success." % email)
     logger.debug("POST /system/v1/login - 200")
     return message, 200
 

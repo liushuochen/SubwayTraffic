@@ -21,34 +21,38 @@ def get_all_user_detail():
     data = []
     for pre_db_data in db_data:
         pre_data = {}
-        pre_data["username"] = pre_db_data[0]
-        pre_data["token"] = pre_db_data[2]
+        pre_data["uuid"] = pre_db_data[0]
+        pre_data["email"] = pre_db_data[1]
+        pre_data["username"] = pre_db_data[2]
+        pre_data["password"] = pre_db_data[3]
+        pre_data["token"] = pre_db_data[4]
+        pre_data["type"] = pre_db_data[5]
         pre_data["create"] = \
-            util.get_time_string_format(time_data=pre_db_data[3])
+            util.get_time_string_format(time_data=pre_db_data[6])
         data.append(pre_data)
     engine.close()
     return data
 
 
 # if a invalid username, return a empty list `[]`
-def get_user_detail(username):
+def get_user_detail(email):
     engine, cursor = db.engine.get_engine()
-    sql = "select * from user where username=\"%s\"" % username
+    sql = "select * from user where email=\"%s\"" % email
     cursor.execute(sql)
     data = cursor.fetchall()
     if not data:
-        logger.error("can not find user %s" % username)
-        raise DBError("can not find user %s" % username, 404)
+        logger.error("can not find user %s" % email)
+        raise DBError("can not find user %s" % email, 404)
     user_details = data[0]
     engine.close()
     return user_details
 
 
 # if username is a invalid username, update_token can not raise any errors
-def update_token(username, token):
+def update_token(email, token):
     engine, cursor = db.engine.get_engine()
-    sql =  "update user set token=\"%s\" where username=\"%s\"" % \
-           (token, username)
+    sql =  "update user set token=\"%s\" where email=\"%s\"" % \
+           (token, email)
     cursor.execute(sql)
     engine.commit()
     engine.close()
