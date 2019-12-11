@@ -130,11 +130,10 @@ def logout():
         logger.debug("GET /system/v1/logout - 401")
         return message, 401
 
-    email = util.session[token]
-    util.session.pop(token)
+    uuid = util.session.pop(token)
     message = {"logout": True, "code": 200}
     message = json.dumps(message)
-    logger.info("user %s logout success." % email)
+    logger.info("user %s logout success." % uuid)
     logger.debug("GET /system/v1/logout - 200")
     return message, 200
 
