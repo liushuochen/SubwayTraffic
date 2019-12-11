@@ -75,9 +75,11 @@ def add_user(**kwargs):
     password = kwargs["password"]
     create_time = kwargs["register_time"]
     token = kwargs["token"]
-    sql = "insert into user(username, password, create_time, token) " \
-          "values(%s, %s, %s, %s)"
-    val = (username, password, create_time, token)
+    uuid = kwargs["uuid"]
+    email = kwargs["email"]
+    user_type = kwargs["user_type"]
+    sql = "insert into user values(%s, %s, %s, %s, %s, %s, %s)"
+    val = (uuid, email, username, password, token, user_type, create_time)
     cursor.execute(sql, val)
     engine.commit()
     engine.close()

@@ -1,6 +1,8 @@
-from conductor import process
+kwargs = {
+    "email": "admin@stp.com",
+    "username": "admin"
+}
 
-def demo():
-    process.push("321")
-    process.push("321")
-    process.push("123")
+if __name__ == '__main__':
+    for k in kwargs:
+        print(k)

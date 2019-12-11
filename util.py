@@ -12,6 +12,7 @@ import datetime
 import configparser
 import random
 import string
+from errors.HTTPcode import STPHTTPException
 
 
 session = {}
@@ -69,3 +70,10 @@ def generate_uuid(uuid_type="lower"):
         random_char_list.append(random.choice(pools))
     uuid = "".join(random_char_list)
     return uuid
+
+def check_param(**kwargs):
+    for param in kwargs:
+        if kwargs[param] is None:
+            raise STPHTTPException("BadRequest: Invalid param %s request." %
+                                   param, 400)
+    return

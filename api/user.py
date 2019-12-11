@@ -55,31 +55,35 @@ def register_user():
         logger.error("register user ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("POST /user/v1/register - 406")
-        message = {"error": "invalid POST request: JSON decode failed."}
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406
+        }
         message = json.dumps(message)
         return message, 406
 
-    username = data.get("username", None)
-    password = data.get("password", None)
-    if username is None or password is None:
-        message = {"error": "BadRequest: Invalid param"}
-        message = json.dumps(message)
-        logger.error("register user error: BadRequest: Invalid param.")
-        logger.debug("POST /user/v1/register - 400")
-        return message, 400
-
     try:
-        conductor.user.register(username, password)
+        email = data.get("email", None)
+        kwargs = {
+            "username": data.get("username", None),
+            "password": data.get("password", None),
+            "email": email,
+            "user_type": conductor.user.user
+        }
+        util.check_param(**kwargs)
+        conductor.user.check_email(email)
+        conductor.user.register(**kwargs)
     except STPHTTPException as e:
-        message = {"error": e.error_message}
+        message = {"error": e.error_message, "code": e.httpcode}
         message = json.dumps(message)
-        logger.error("register user error: %s." % e.error_message)
+        logger.error("register user ERROR: %s\n%s." %
+                     (e.error_message, traceback.format_exc()))
         logger.debug("POST /user/v1/register - %s" % e.httpcode)
         return message, e.httpcode
 
-    message = {"success": "registered user %s success" % username}
+    message = {"success": "registered user %s success" % email, "code": 200}
     message = json.dumps(message)
-    logger.info("register user %s success." % username)
+    logger.info("register user %s success." % email)
     logger.debug("POST /user/v1/register - 200")
     return message, 200
 

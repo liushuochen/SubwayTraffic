@@ -140,3 +140,7 @@ SubwayTraffic Platform v0.3.0.RC1.B070
 SubwayTraffic Platform v0.3.0.RC1.B080
     1、登录功能适配v0.3.0.RC1.B070user表改动
     2、退出功能适配v0.3.0.RC1.B070user表改动
+    3、增加注册用户接口 /user/v1/register 的返回json中增加code值
+
+SubwayTraffic Platform v0.3.0.RC1.B090
+    1、注册用户功能适配v0.3.0.RC1.B070user表改动

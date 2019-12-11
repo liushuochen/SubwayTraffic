@@ -13,7 +13,10 @@ import util
 from errors.HTTPcode import STPHTTPException, DBError
 from conductor import logger
 
-User_security_password_length = 8
+user_security_password_length = 8
+
+admin = 1
+user = 2
 
 def users():
     user_list = db.user.get_all_user_detail()
@@ -26,32 +29,30 @@ def users():
     return user_list
 
 
-def register(username, password):
-    usernames = available_user()
-    if username in usernames:
-        raise STPHTTPException("The username %s already exist"
-                               % username, 403)
-    if len(password) < User_security_password_length:
+def register(**kwargs):
+    email_set = available_email()
+    if kwargs["email"] in email_set:
+        raise STPHTTPException("The email %s already exist"
+                               % kwargs["email"], 403)
+    if len(kwargs["password"]) < user_security_password_length:
         raise STPHTTPException("Password length must more than 8.", 403)
 
     try:
-        token = conductor.system.general_token()
-        register_time = util.get_time_string_format()
-        db.user.add_user(username=username,
-                         password=password,
-                         register_time=register_time,
-                         token=token)
+        kwargs["uuid"] = util.generate_uuid()
+        kwargs["token"] = conductor.system.general_token()
+        kwargs["register_time"] = util.get_time_string_format()
+        db.user.add_user(**kwargs)
     except Exception as e:
         raise STPHTTPException("Register user ERROR: %s" % str(e), 503)
     return
 
 
-def available_user():
+def available_email():
     user_list = db.user.get_all_user_detail()
-    usernames = []
+    email = set()
     for user in user_list:
-        usernames.append(user["username"])
-    return usernames
+        email.add(user["email"])
+    return email
 
 
 def destroy(username):
@@ -80,3 +81,8 @@ def modify_user_pwd(username, password, new_password):
     db.user.update_pwd(username, new_password)
     logger.info("Change user %s password successful." % username)
     return
+
+
+def check_email(email):
+    if email.count("@") != 1 or email[-4:] != ".com":
+        raise STPHTTPException("Invalid email format %s." % email, 400)
