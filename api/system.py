@@ -77,23 +77,16 @@ def login():
     email = data.get("email", None)
     password = data.get("password", None)
     logger.info("user %s login..." % email)
-    if (email is None) or (password is None):
-        message = {
-            "login": False,
-            "token": None,
-            "error": "BadRequest: Invalid email or password.",
-            "code": 400
-        }
-        message = json.dumps(message)
-        logger.error("user %s login ERROR: Invalid email or password."
-                     % email)
-        logger.debug("POST /system/v1/login - 400")
-        return message, 400
 
     try:
+        kwargs = {
+            "email": email,
+            "password": password
+        }
+        util.check_param(**kwargs)
         uuid, token = conductor.system.verify_user(email, password)
         for history_token in util.session:
-            if util.session[history_token] == email:
+            if util.session[history_token] == uuid:
                 raise STPHTTPException("User logged in.", 403)
     except STPHTTPException as e:
         message = {

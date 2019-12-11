@@ -24,5 +24,4 @@ process_stack = ProStack()
 process_queue = Queue()
 
 def init():
-    logger.info("init conductor...")
     process_stack.push(os.getpid())
