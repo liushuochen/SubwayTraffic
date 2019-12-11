@@ -50,30 +50,37 @@ def register(**kwargs):
 def available_email():
     user_list = db.user.get_all_user_detail()
     email = set()
-    for user in user_list:
-        email.add(user["email"])
+    for user_detail in user_list:
+        email.add(user_detail["email"])
     return email
 
 
-def destroy(username):
-    usernames = available_user()
-    if username not in usernames:
-        raise STPHTTPException("can not find user %s" % username, 404)
+def destroy(uuid):
+    delete_user = user_detail(uuid)
+    if delete_user["type"] == "admin":
+        raise STPHTTPException("can not delete admin user.", 403)
 
-    if username == "admin":
-        raise STPHTTPException("can not delete admin user", 401)
-
-    try:
-        db.user.drop_user(username)
-    except DBError as e:
-        raise STPHTTPException(e.error_message, e.error_code)
+    db.user.drop_user(uuid)
     return
+
+
+def user_detail(uuid):
+    user_list = db.user.get_all_user_detail()
+    for user_detail in user_list:
+        if user_detail["uuid"] == uuid:
+            target_user = user_detail
+            break
+    else:
+        raise STPHTTPException("can not find user %s" % uuid, 404)
+
+    return target_user
+
 
 
 def modify_user_pwd(username, password, new_password):
     conductor.system.verify_user(username, password)
 
-    if len(new_password) < User_security_password_length:
+    if len(new_password) < user_security_password_length:
         logger.error("Change user %s password ERROR: Password length must more than"
                      " 8." % username)
         raise STPHTTPException("Password length must more than 8.", 403)
@@ -86,3 +93,8 @@ def modify_user_pwd(username, password, new_password):
 def check_email(email):
     if email.count("@") != 1 or email[-4:] != ".com":
         raise STPHTTPException("Invalid email format %s." % email, 400)
+
+
+def is_admin_user(uuid):
+    user = user_detail(uuid)
+    return user["type"] == "admin"

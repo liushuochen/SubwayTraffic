@@ -91,7 +91,7 @@ def login():
         return message, 400
 
     try:
-        token = conductor.system.verify_user(email, password)
+        uuid, token = conductor.system.verify_user(email, password)
         for history_token in util.session:
             if util.session[history_token] == email:
                 raise STPHTTPException("User logged in.", 403)
@@ -113,7 +113,7 @@ def login():
         "code": 200
     }
     message = json.dumps(message)
-    util.session[token] = email
+    util.session[token] = uuid
     conductor.system.update_token(email)
     logger.info("user %s login success." % email)
     logger.debug("POST /system/v1/login - 200")

@@ -16,6 +16,8 @@ from errors.HTTPcode import STPHTTPException
 
 
 session = {}
+TOKEN_LENGTH = 10
+pools = string.ascii_letters + string.digits
 
 
 def get_root_path():
@@ -71,9 +73,18 @@ def generate_uuid(uuid_type="lower"):
     uuid = "".join(random_char_list)
     return uuid
 
+
 def check_param(**kwargs):
     for param in kwargs:
         if kwargs[param] is None:
             raise STPHTTPException("BadRequest: Invalid param %s request." %
                                    param, 400)
     return
+
+
+def general_token():
+    new_token_list = []
+    for i in range(TOKEN_LENGTH):
+        new_token_list.append(random.choice(pools))
+    new_token = "".join(new_token_list)
+    return new_token

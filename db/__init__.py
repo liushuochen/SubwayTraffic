@@ -9,7 +9,6 @@ Effect:             The SubwayTraffic Platform system database init
 
 import configparser
 import util
-import conductor.system
 import db.engine
 from logs.logger import LOG
 
@@ -82,7 +81,7 @@ def create_user_table(config):
     admin_pwd = config.get("deploy", "admin_pwd")
     email = config.get("deploy", "admin_email")
     now = util.get_time_string_format()
-    token = conductor.system.general_token()
+    token = util.general_token()
     user_type = Admin
     sql = "insert into user " \
           "values(%s, %s, %s, %s, %s, %s, %s)"

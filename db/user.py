@@ -86,9 +86,9 @@ def add_user(**kwargs):
     return
 
 
-def drop_user(username):
+def drop_user(uuid):
     engine, cursor = db.engine.get_engine()
-    sql = "delete from user where username=\"%s\"" % username
+    sql = "delete from user where uuid=\"%s\"" % uuid
     cursor.execute(sql)
     engine.commit()
     engine.close()

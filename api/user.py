@@ -92,40 +92,44 @@ def register_user():
 def delete_user():
     try:
         data = json.loads(flask.request.data)
+
+        uuid = data.get("uuid", None)
+        params = {"uuid": uuid}
+        util.check_param(**params)
+
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            message = {"error": "limited authority", "code": 401}
+            message = json.dumps(message)
+            logger.debug("DELETE /user/v1/delete - 401")
+            logger.warn("delete user WARNING: limited authority.")
+            return message, 401
+
+        conductor.user.destroy(uuid)
+
+    except STPHTTPException as e:
+        logger.error("delete user ERROR:\n %s" % traceback.format_exc())
+        logger.debug("DELETE /user/v1/delete - %s" % e.httpcode)
+        message = {"error": e.error_message, "code": e.httpcode}
+        message = json.dumps(message)
+        return message, e.httpcode
+
     except json.decoder.JSONDecodeError:
         logger.error("delete user ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("DELETE /user/v1/delete - 406")
-        message = {"error": "invalid DELETE request: JSON decode failed."}
+        message = {
+            "error": "invalid DELETE request: JSON decode failed.",
+            "code": 406
+        }
         message = json.dumps(message)
         return message, 406
 
-    username = data.get("username", None)
-    if username is None:
-        message = {"error": "BadRequest: Invalid param"}
-        message = json.dumps(message)
-        logger.debug("DELETE /user/v1/delete - 400")
-        return message, 400
-
-    token = flask.request.headers.get("token", None)
-    if (token not in util.session) or (util.session[token] != "admin"):
-        message = {"error": "limited authority"}
-        message = json.dumps(message)
-        logger.debug("DELETE /user/v1/delete - 401")
-        logger.warn("delete user WARNING: limited authority.")
-        return message, 401
-
-    try:
-        conductor.user.destroy(username)
-    except STPHTTPException as e:
-        message = {"error": e.error_message}
-        message = json.dumps(message)
-        return message, e.httpcode
-
-    message = {"success": "delete user %s success" % username}
+    message = {"success": "delete user %s success" % uuid, "code": 200}
     message = json.dumps(message)
     logger.debug("DELETE /user/v1/delete - 200")
-    logger.info("user %s has been deleted." % username)
+    logger.info("user %s has been deleted." % uuid)
     return message, 200
 
 

@@ -1,8 +1,4 @@
-kwargs = {
-    "email": "admin@stp.com",
-    "username": "admin"
-}
+from conductor.user import is_admin_user
 
 if __name__ == '__main__':
-    for k in kwargs:
-        print(k)
+    print(is_admin_user("gr1qtwj7-rc40-6j2b-5gjp4wqh"))

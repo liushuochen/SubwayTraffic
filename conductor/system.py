@@ -10,14 +10,10 @@ Effect:             The SubwayTraffic Platform system conductor for system
 
 import util
 import db.user as model
-import random
-import string
 import traceback
 from errors.HTTPcode import STPHTTPException, DBError
 from conductor import logger
 
-pools = string.ascii_letters + string.digits
-TOKEN_LENGTH = 10
 
 def get_version():
     root_path = util.get_root_path()
@@ -38,7 +34,7 @@ def get_token(username):
 
 
 def update_token(email):
-    new_token = general_token()
+    new_token = util.general_token()
     model.update_token(email, new_token)
     return
 
@@ -46,20 +42,13 @@ def update_token(email):
 def verify_user(post_email, post_password):
     try:
         detail = model.get_user_detail(post_email)
+        uuid = detail[0]
         password = detail[3]
         token = detail[4]
         if post_password != password:
             logger.error("user %s can not login: Wrong email or password." %
                          post_email)
             raise STPHTTPException("Wrong email or password.", 404)
-        return token
+        return uuid, token
     except DBError as e:
         raise STPHTTPException(e.error_message, e.error_code)
-
-
-def general_token():
-    new_token_list = []
-    for i in range(TOKEN_LENGTH):
-        new_token_list.append(random.choice(pools))
-    new_token = "".join(new_token_list)
-    return new_token
