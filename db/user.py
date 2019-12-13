@@ -69,6 +69,19 @@ def update_pwd(username, password):
     return
 
 
+def update(**params):
+    engine, cursor = db.engine.get_engine()
+    sql = "update user set email='%s', username='%s', password='%s' " \
+          "where uuid='%s'" % (params["email"],
+                               params["username"],
+                               params["password"],
+                               params["uuid"]
+                               )
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
+    return
+
 def add_user(**kwargs):
     engine, cursor = db.engine.get_engine()
     username = kwargs["username"]

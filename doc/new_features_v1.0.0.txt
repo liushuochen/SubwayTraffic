@@ -148,3 +148,6 @@ SubwayTraffic Platform v0.3.0.RC1.B090
     3、修复登出功能日志打印不完善的bug
     4、修复部署服务器不能启动的bug
     5、修复可以重复登录的bug
+
+SubwayTraffic Platform dev0.3.0.B010
+    1、修改用户功能适配v0.3.0.RC1.B070user表改动

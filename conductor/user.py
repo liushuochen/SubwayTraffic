@@ -76,17 +76,34 @@ def user_detail(uuid):
     return target_user
 
 
+def update(**kwargs):
+    user_uuid, _ = \
+        conductor.system.verify_user(kwargs["email"], kwargs["password"])
+    uuid = kwargs["uuid"]
+    if user_uuid != uuid:
+        raise STPHTTPException("Invalid uuid %s" % uuid, 403)
 
-def modify_user_pwd(username, password, new_password):
-    conductor.system.verify_user(username, password)
-
-    if len(new_password) < user_security_password_length:
-        logger.error("Change user %s password ERROR: Password length must more than"
-                     " 8." % username)
+    params = {"uuid": uuid}
+    if "new_password" in kwargs:
+        params["password"] = kwargs["new_password"]
+    else:
+        params["password"] = kwargs["password"]
+    if len(params["password"]) < user_security_password_length:
         raise STPHTTPException("Password length must more than 8.", 403)
 
-    db.user.update_pwd(username, new_password)
-    logger.info("Change user %s password successful." % username)
+    if "new_email" in kwargs:
+        params["email"] = kwargs["new_email"]
+    else:
+        params["email"] = kwargs["email"]
+    check_email(params["email"])
+
+    if "new_username" in kwargs:
+        params["username"] = kwargs["new_username"]
+    else:
+        params["username"] = kwargs["username"]
+
+    db.user.update(**params)
+    logger.info("update user %s param: %s" % (params["uuid"], params))
     return
 
 

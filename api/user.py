@@ -133,57 +133,50 @@ def delete_user():
     return message, 200
 
 
-@user_blue.route("/modify/<context>", methods=["PUT"])
-def update_user(context):
+@user_blue.route("/modify", methods=["PUT"])
+def update_user():
     try:
         data = json.loads(flask.request.data)
+
+        uuid = data.get("uuid", None)
+        email = data.get("email", None)
+        password = data.get("password", None)
+        kwargs = {
+            "uuid": uuid,
+            "email": email,
+            "password": password
+        }
+        util.check_param(**kwargs)
+
+        if "new_email" in data:
+            kwargs["new_email"] = data["new_email"]
+        if "new_username" in data:
+            kwargs["new_username"] = data["new_username"]
+        if "new_password" in data:
+            kwargs["new_password"] = data["new_password"]
+        conductor.user.update(**kwargs)
     except json.decoder.JSONDecodeError:
         logger.error("modify user ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
-        logger.debug("PUT /user/v1/modify/%s - 406" % context)
-        message = {"error": "invalid PUT request: JSON decode failed."}
+        logger.debug("PUT /user/v1/modify - 406")
+        message = {
+            "error": "invalid PUT request: JSON decode failed.",
+            "code": 406
+        }
         message = json.dumps(message)
         return message, 406
-
-    if context == "username":
-        message = {"error": "can not change username."}
+    except STPHTTPException as e:
+        message = {"error": e.error_message, "code": e.httpcode}
         message = json.dumps(message)
-        logger.debug("PUT /user/v1/modify/username - 403")
-        return message, 403
+        logger.debug("PUT /user/v1/modify - %s" % e.httpcode)
+        logger.error("modify user ERROR:\n %s" % traceback.format_exc())
+        return message, e.httpcode
 
-    elif context == "password":
-        username = data.get("username", None)
-        password = data.get("password", None)
-        new_password = data.get("new_password", None)
-        if (username is None) or (password is None) or (new_password is None):
-            message = {"error": "BadRequest: Invalid param"}
-            message = json.dumps(message)
-            logger.debug("PUT /user/v1/modify/password - 400")
-            logger.error("modify user %s password ERROR: BadRequest: Invalid "
-                         "param." % username)
-            return message, 400
-
-        try:
-            conductor.user.modify_user_pwd(username, password, new_password)
-        except STPHTTPException as e:
-            message = {"error": e.error_message}
-            message = json.dumps(message)
-            logger.debug("PUT /user/v1/modify/password - %s" % e.httpcode)
-            return message, e.httpcode
-
-        logger.info("change user %s password success, check user login..." %
-                    username)
-        for sess in util.session:
-            if util.session[sess] == username:
-                util.session.pop(sess)
-                logger.info("user %s logout after change password." % username)
-                break
-
-        message = {"success": "change password success."}
-        message = json.dumps(message)
-        logger.debug("PUT /user/v1/modify/password - 200")
-        return message, 200
-    else:
-        message = {"error": "unknown modify request - '%s'" % context}
-        message = json.dumps(message)
-        return message, 404
+    message = {
+        "success": "update user %s success." % uuid,
+        "code": 200
+    }
+    message = json.dumps(message)
+    logger.info("update user %s success." % uuid)
+    logger.debug("PUT /user/v1/modify - 200")
+    return message, 200
