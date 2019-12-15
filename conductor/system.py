@@ -11,6 +11,7 @@ Effect:             The SubwayTraffic Platform system conductor for system
 import util
 import db.user as model
 import traceback
+import utils.sendEmailCode as sendEmail
 from errors.HTTPcode import STPHTTPException, DBError
 from conductor import logger
 
@@ -52,3 +53,8 @@ def verify_user(post_email, post_password):
         return uuid, token
     except DBError as e:
         raise STPHTTPException(e.error_message, e.error_code)
+
+
+def send_verificationcode(vcode, receivers):
+    sendEmail.__init__(receivers)
+    sendEmail.send(vcode)
