@@ -88,3 +88,11 @@ def general_token():
         new_token_list.append(random.choice(pools))
     new_token = "".join(new_token_list)
     return new_token
+
+
+def admin_email():
+    conf_path = get_root_path() + "/conf/platform.conf"
+    conf = configparser.ConfigParser()
+    conf.read(conf_path)
+    email = conf.get("deploy", "admin_email")
+    return email

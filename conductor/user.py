@@ -18,10 +18,12 @@ user_security_password_length = 8
 admin = 1
 user = 2
 
+
 def users():
     user_list = db.user.get_all_user_detail()
+    admin_email = util.admin_email()
     for user in user_list:
-        if user["username"] == "admin":
+        if user["email"] == admin_email:
             user_list.remove(user)
             break
 
