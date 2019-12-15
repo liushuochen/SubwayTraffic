@@ -8,7 +8,8 @@ Effect:             The SubwayTraffic Platform system process stack
                     operation.
 """
 
-class Stack():
+
+class Stack(object):
     def __init__(self):
         self.base = []
 

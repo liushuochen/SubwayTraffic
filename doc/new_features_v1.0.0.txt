@@ -151,4 +151,7 @@ SubwayTraffic Platform v0.3.0.RC1.B090
 
 SubwayTraffic Platform dev0.3.0.B010
     1、修改用户功能适配v0.3.0.RC1.B070user表改动
-    2、修改用户列表功能适配v0.3.0.RC1.B070user表改动
+    2、获取用户列表功能适配v0.3.0.RC1.B070user表改动
+
+SubwayTraffic Platform dev0.3.0.B020
+    1、发送邮件验证码功能开发
