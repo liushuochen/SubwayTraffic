@@ -155,3 +155,5 @@ SubwayTraffic Platform dev0.3.0.B010
 
 SubwayTraffic Platform dev0.3.0.B020
     1、发送邮件验证码功能开发
+    2、删除utils文件夹
+    3、修复注册用户功能503BUG

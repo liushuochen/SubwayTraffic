@@ -11,7 +11,6 @@ Effect:             The SubwayTraffic Platform system conductor for system
 import util
 import db.user as model
 import traceback
-import utils.sendEmailCode as sendEmail
 from errors.HTTPcode import STPHTTPException, DBError
 from conductor import logger
 

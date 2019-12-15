@@ -41,7 +41,7 @@ def register(**kwargs):
 
     try:
         kwargs["uuid"] = util.generate_uuid()
-        kwargs["token"] = conductor.system.general_token()
+        kwargs["token"] = util.general_token()
         kwargs["register_time"] = util.get_time_string_format()
         db.user.add_user(**kwargs)
     except Exception as e:
