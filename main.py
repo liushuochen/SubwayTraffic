@@ -40,7 +40,7 @@ def send_mail(**kwargs):
     message = flask_mail.Message(
         subject,
         recipients=kwargs["receiver"],
-        sender=("admin", conf.get("deploy", "admin_email")),
+        sender=("SubwayTraffic", conf.get("deploy", "admin_email")),
     )
     if mail_type == "send_code":
         message.html = flask.render_template("send_code.html",
