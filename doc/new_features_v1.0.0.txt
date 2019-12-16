@@ -163,3 +163,6 @@ SubwayTraffic Platform dev0.3.0.B030
     2、【开发】通过邮件发送验证码时，会被记录到数据库中
     3、【开发】删除修改用户必须使用密码参数的要求
     4、【修复】系统邮件发送者名称修改为SubwayTraffic
+
+SubwayTraffic Platform dev0.3.0.B040
+    1、【开发】所有数据表增加主键

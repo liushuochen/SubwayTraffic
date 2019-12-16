@@ -36,7 +36,6 @@ def init():
         init_database(db_name)
 
     # init table
-    deploy_type = deploy_conf.get("deploy", "build_type")
     tables = get_all_tables(db_name)
     if "user" not in tables:
         create_user_table(deploy_conf)
@@ -54,10 +53,11 @@ def create_verify_code_table():
     engine, cursor = db.engine.get_engine()
     sql = """
     create table verify_code(
-    uuid    char(27) not null,
+    uuid    char(27),
     code    varchar(10) not null,
     operate varchar(20) not null,
-    modify  datetime not null
+    modify  datetime not null,
+    primary key(uuid)
     ) charset utf8
     """
     cursor.execute(sql)
@@ -69,8 +69,9 @@ def create_subway_line_table():
     engine, cursor = db.engine.get_engine()
     sql = """
     create table subway_line(
-    uuid  char(27) not null,
-    name  varchar(10) not null
+    uuid  char(27),
+    name  varchar(10),
+    primary key(uuid, name)
     ) charset utf8
     """
     cursor.execute(sql)
@@ -82,13 +83,14 @@ def create_user_table(config):
     engine, cursor = db.engine.get_engine()
     sql = """
     create table user(
-    uuid        char(27) not null,
-    email       varchar(30) not null,
-    username    varchar(24) not null,
+    uuid        char(27),
+    email       varchar(30),
+    username    varchar(24) default "subway user",
     password    varchar(18) not null,
     token       char(10) not null,
     user_type        enum("admin", "user") not null default "user",
-    create_time datetime not null
+    create_time datetime not null,
+    primary key(uuid, email)
     ) charset utf8
     """
     cursor.execute(sql)
