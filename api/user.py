@@ -69,7 +69,7 @@ def register_user():
             "username": data.get("username", None),
             "password": data.get("password", None),
             "email": email,
-            "user_type": conductor.user.user
+            "user_type": conductor.user.normal_user
         }
         util.check_param(**kwargs)
         conductor.user.check_email(email)

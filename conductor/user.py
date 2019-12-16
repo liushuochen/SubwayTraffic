@@ -8,7 +8,6 @@ Effect:             The SubwayTraffic Platform system conductor for user.
 """
 
 import db.user
-import conductor.system
 import util
 from errors.HTTPcode import STPHTTPException, DBError
 from conductor import logger
@@ -16,7 +15,7 @@ from conductor import logger
 user_security_password_length = 8
 
 admin = 1
-user = 2
+normal_user = 2
 
 
 def users():
