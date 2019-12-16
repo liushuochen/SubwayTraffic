@@ -34,7 +34,6 @@ def get_all_user_detail():
     return data
 
 
-# if a invalid username, return a empty list `[]`
 def get_user_detail(email):
     engine, cursor = db.engine.get_engine()
     sql = "select * from user where email=\"%s\"" % email
@@ -82,6 +81,7 @@ def update(**params):
     engine.close()
     return
 
+
 def add_user(**kwargs):
     engine, cursor = db.engine.get_engine()
     username = kwargs["username"]
@@ -93,6 +93,16 @@ def add_user(**kwargs):
     user_type = kwargs["user_type"]
     sql = "insert into user values(%s, %s, %s, %s, %s, %s, %s)"
     val = (uuid, email, username, password, token, user_type, create_time)
+    cursor.execute(sql, val)
+    engine.commit()
+    engine.close()
+    return
+
+
+def add_code(uuid, code, operate, modify_time):
+    engine, cursor = db.engine.get_engine()
+    sql = "insert into verify_code values(%s, %s, %s, %s)"
+    val = (uuid, code, operate, modify_time)
     cursor.execute(sql, val)
     engine.commit()
     engine.close()
