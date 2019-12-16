@@ -164,12 +164,18 @@ def update_user():
         }
         message = json.dumps(message)
         return message, 406
-    except STPHTTPException and DBError as e:
+    except STPHTTPException as e:
         message = {"error": e.error_message, "code": e.httpcode}
         message = json.dumps(message)
         logger.debug("PUT /user/v1/modify - %s" % e.httpcode)
         logger.error("modify user ERROR:\n %s" % traceback.format_exc())
         return message, e.httpcode
+    except DBError as e:
+        message = {"error": e.error_message, "code": e.error_code}
+        message = json.dumps(message)
+        logger.debug("PUT /user/v1/modify - %s" % e.error_code)
+        logger.error("modify user ERROR:\n %s" % traceback.format_exc())
+        return message, e.error_code
 
     message = {
         "success": "update user %s success." % uuid,
