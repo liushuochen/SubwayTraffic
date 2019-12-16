@@ -119,10 +119,16 @@ def is_admin_user(uuid):
     return user["type"] == "admin"
 
 
+def code_exit(uuid):
+    return len(db.user.get_code_detail(uuid)) > 0
+
+
 def push_verify_code(receiver, code, operate):
     for email in receiver:
         try:
             uuid = db.user.get_user_detail(email)[0]
+            if code_exit(uuid):
+                db.user.drop_code(uuid)
             modify_time = util.get_time_string_format()
             db.user.add_code(uuid, code, operate, modify_time)
         except DBError:

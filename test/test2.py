@@ -1,4 +1,4 @@
-import db.user
+import conductor.user
 
 if __name__ == '__main__':
-    print(db.user.get_user_detail("admin@stp.com"))
+    print(conductor.user.code_exit("w77jdxyq-78p2-27qt-q83tev9ys"))

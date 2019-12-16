@@ -116,3 +116,22 @@ def drop_user(uuid):
     engine.commit()
     engine.close()
     return
+
+
+def get_code_detail(uuid):
+    engine, cursor = db.engine.get_engine()
+    sql = "select * from verify_code where uuid='%s'" % uuid
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    if not data:
+        return data
+    return data[0]
+
+
+def drop_code(uuid):
+    engine, cursor = db.engine.get_engine()
+    sql = "delete from verify_code where uuid='%s'" % uuid
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
+    return
