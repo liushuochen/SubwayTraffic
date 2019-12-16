@@ -10,13 +10,10 @@ Effect:             The SubwayTraffic Platform system entrance.
 import flask
 import flask_mail
 import configparser
-import api.system as system
-import api.user as user
-import api.line as line
-import api.email as semail
 import db
 import logs
 import conductor
+import server_init
 from api import logger
 
 conf = configparser.ConfigParser()
@@ -34,10 +31,7 @@ stp_app.config.update(
 )
 stp_email = flask_mail.Mail(stp_app)
 
-stp_app.register_blueprint(system.system_blue)
-stp_app.register_blueprint(user.user_blue)
-stp_app.register_blueprint(line.line_blue)
-stp_app.register_blueprint(semail.email_blue)
+server_init.register(stp_app)
 
 
 def send_mail(**kwargs):
@@ -62,7 +56,7 @@ def init():
     conductor.init()
     logs.init()
 
-    # if host mysql server do not start, db.init() will raise
+    # TODO: if host mysql server do not start, db.init() will raise
     # mysql.connector.errors.InterfaceError.
     db.init()
 
