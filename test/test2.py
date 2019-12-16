@@ -1,6 +1,4 @@
-
+import db.user
 
 if __name__ == '__main__':
-    d = {"a": 1}
-    r = d.pop("a")
-    print(r)
+    print(db.user.get_user_detail("admin@stp.com"))

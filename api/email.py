@@ -9,8 +9,9 @@ Effect:             The SubwayTraffic Platform system process send email
 """
 
 import flask
-import random
 import json
+import util
+import conductor.user
 
 email_blue = flask.Blueprint("email_blue", __name__, url_prefix="/email/v1")
 
@@ -32,23 +33,18 @@ def send_code_email():
     receiver = data.get("receiver", None)
     header = data.get("header", None)
     operate = data.get("operate", None)
-    pools = "0123456789"
-    code = ""
-    while True:
-        number = random.choice(pools)
-        code = code + number
-        if len(code) >= 6:
-            break
-
+    verify_code = util.general_verify_code(6)
     kwargs = {
         "header": header,
         "type": "send_code",
         "receiver": receiver,
         "operate": operate,
-        "code": code
+        "code": verify_code
     }
-    import main
-    main.send_mail(**kwargs)
+    from main import send_mail
+    send_mail(**kwargs)
+
+    conductor.user.push_verify_code(receiver, verify_code, operate)
 
     message = {
         "success": "send to %s success." % receiver,

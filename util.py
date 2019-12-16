@@ -90,6 +90,18 @@ def general_token():
     return new_token
 
 
+def general_verify_code(length):
+    number_pools = "0123456789"
+    if length <= 0:
+        return ""
+
+    verify_code_list = []
+    for i in range(length):
+        verify_code_list.append(random.choice(number_pools))
+
+    verify_code = "".join(verify_code_list)
+    return verify_code
+
 def admin_email():
     conf_path = get_root_path() + "/conf/platform.conf"
     conf = configparser.ConfigParser()

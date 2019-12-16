@@ -12,7 +12,7 @@ import json
 import traceback
 import conductor.user
 import util
-from errors.HTTPcode import STPHTTPException
+from errors.HTTPcode import STPHTTPException, DBError
 from api import logger
 
 user_blue = flask.Blueprint("user_blue",
@@ -141,11 +141,9 @@ def update_user():
 
         uuid = data.get("uuid", None)
         email = data.get("email", None)
-        password = data.get("password", None)
         kwargs = {
             "uuid": uuid,
-            "email": email,
-            "password": password
+            "email": email
         }
         util.check_param(**kwargs)
 
@@ -166,7 +164,7 @@ def update_user():
         }
         message = json.dumps(message)
         return message, 406
-    except STPHTTPException as e:
+    except STPHTTPException and DBError as e:
         message = {"error": e.error_message, "code": e.httpcode}
         message = json.dumps(message)
         logger.debug("PUT /user/v1/modify - %s" % e.httpcode)

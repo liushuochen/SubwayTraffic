@@ -159,4 +159,6 @@ SubwayTraffic Platform dev0.3.0.B020
     3、修复注册用户功能503BUG
 
 SubwayTraffic Platform dev0.3.0.B030
-    1、优化蓝图注册
+    1、【优化】优化蓝图注册
+    2、【开发】通过邮件发送验证码时，会被记录到数据库中
+    3、【开发】删除修改用户必须使用密码参数的要求

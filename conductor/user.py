@@ -79,8 +79,8 @@ def user_detail(uuid):
 
 
 def update(**kwargs):
-    user_uuid, _ = \
-        conductor.system.verify_user(kwargs["email"], kwargs["password"])
+    email = kwargs["email"]
+    user_uuid = db.user.get_user_detail(email)[0]
     uuid = kwargs["uuid"]
     if user_uuid != uuid:
         raise STPHTTPException("Invalid uuid %s" % uuid, 403)
@@ -117,3 +117,14 @@ def check_email(email):
 def is_admin_user(uuid):
     user = user_detail(uuid)
     return user["type"] == "admin"
+
+
+def push_verify_code(receiver, code, operate):
+    for email in receiver:
+        try:
+            uuid = db.user.get_user_detail(email)[0]
+            modify_time = util.get_time_string_format()
+            db.user.add_code(uuid, code, operate, modify_time)
+        except DBError:
+            continue
+    return

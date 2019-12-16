@@ -21,6 +21,7 @@ logger = LOG(
 
 Admin = "admin"
 
+
 def init():
     logger.info("init database...")
     platform_conf_path = util.get_root_path() + "/conf/platform.conf"
@@ -43,7 +44,24 @@ def init():
     if "subway_line" not in tables:
         create_subway_line_table()
 
+    if "verify_code" not in tables:
+        create_verify_code_table()
 
+    return
+
+
+def create_verify_code_table():
+    engine, cursor = db.engine.get_engine()
+    sql = """
+    create table verify_code(
+    uuid    char(27) not null,
+    code    varchar(10) not null,
+    operate varchar(20) not null,
+    modify  datetime not null
+    ) charset utf8
+    """
+    cursor.execute(sql)
+    engine.close()
     return
 
 
