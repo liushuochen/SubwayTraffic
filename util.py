@@ -102,6 +102,7 @@ def general_verify_code(length):
     verify_code = "".join(verify_code_list)
     return verify_code
 
+
 def admin_email():
     conf_path = get_root_path() + "/conf/platform.conf"
     conf = configparser.ConfigParser()

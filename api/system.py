@@ -11,6 +11,7 @@ Effect:             The SubwayTraffic Platform system api for system
 import flask
 import json
 import conductor.system
+import conductor.user
 import conductor
 import traceback
 import util
@@ -134,7 +135,9 @@ def logout():
 @system_blue.route("/session", methods=["GET"])
 def get_session():
     token = flask.request.headers.get("token", None)
-    if (token not in util.session) or (util.session[token] != "admin"):
+    print(util.session)
+    if (token not in util.session) or \
+            (not conductor.user.is_admin_user(util.session[token])):
         message = {"error": "limited authority", "code": 401}
         message = json.dumps(message)
         logger.warn("Can not get session: limited authority!")
