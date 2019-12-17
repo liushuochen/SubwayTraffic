@@ -50,8 +50,8 @@ def get_user_detail(email):
 # if username is a invalid username, update_token can not raise any errors
 def update_token(email, token):
     engine, cursor = db.engine.get_engine()
-    sql =  "update user set token=\"%s\" where email=\"%s\"" % \
-           (token, email)
+    sql = "update user set token=\"%s\" where email=\"%s\"" % \
+          (token, email)
     cursor.execute(sql)
     engine.commit()
     engine.close()
@@ -135,3 +135,11 @@ def drop_code(uuid):
     engine.commit()
     engine.close()
     return
+
+
+def is_user_exist(email):
+    engine, cursor = db.engine.get_engine()
+    sql = "select count(1) from user where email = '%s'" % email
+    cursor.execute(sql)
+    data = cursor.fetchone()
+    return str(data[0])

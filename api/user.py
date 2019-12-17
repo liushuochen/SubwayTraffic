@@ -48,6 +48,23 @@ def user_list():
     return message, 200
 
 
+@user_blue.route("/isuserexist", methods=["POST"])
+def find_user():
+    try:
+        data = json.loads(flask.request.data)
+        email = data.get("email", None)
+        conductor.user.check_email(email)
+    except STPHTTPException as e:
+        logger.debug("GET /user/v1/isuserexist - %s" % e.httpcode)
+        message = {
+            "error": "Invalid email format.",
+            "code": 400
+        }
+        message = json.dumps(message)
+        return message, 400
+    return conductor.user.is_user_exist(email)
+
+
 @user_blue.route("/register", methods=["POST"])
 def register_user():
     try:

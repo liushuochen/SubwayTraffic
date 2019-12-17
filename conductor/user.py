@@ -133,3 +133,7 @@ def push_verify_code(receiver, code, operate):
         except DBError:
             continue
     return
+
+
+def is_user_exist(email):
+    return db.user.is_user_exist(email)
