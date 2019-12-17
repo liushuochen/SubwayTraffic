@@ -11,6 +11,7 @@ import util
 import db.line
 from errors.HTTPcode import STPHTTPException
 
+
 def line_exist(param, model):
     lines = db.line.subway_list()
     models = {"name", "uuid"}

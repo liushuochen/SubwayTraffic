@@ -167,3 +167,4 @@ SubwayTraffic Platform dev0.3.0.B030
 SubwayTraffic Platform dev0.3.0.B040
     1、【开发】所有数据表增加主键
     2、【修复】修改用户时，若修改不存在的用户返回500的bug
+    3、【修复】发送验证码邮件功能加固
