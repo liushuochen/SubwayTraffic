@@ -14,10 +14,12 @@ import db
 import logs
 import conductor
 import server_init
+import util
 from api import logger
 
 conf = configparser.ConfigParser()
-conf.read("conf/platform.conf")
+config_path = util.get_root_path() + "/conf/platform.conf"
+conf.read(config_path)
 host = conf.get("system", "host")
 port = conf.get("system", "port")
 
