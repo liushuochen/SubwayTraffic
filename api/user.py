@@ -160,9 +160,11 @@ def update_user():
         email = data.get("email", None)
         kwargs = {
             "uuid": uuid,
-            "email": email
+            "email": email,
+            "verify_code": data.get("verify_code", None)
         }
         util.check_param(**kwargs)
+        conductor.user.check_verify_code(uuid)
 
         if "new_email" in data:
             kwargs["new_email"] = data["new_email"]

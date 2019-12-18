@@ -125,6 +125,7 @@ def get_code_detail(uuid):
     data = cursor.fetchall()
     if not data:
         return data
+    engine.close()
     return data[0]
 
 
@@ -139,7 +140,7 @@ def drop_code(uuid):
 
 def is_user_exist(email):
     engine, cursor = db.engine.get_engine()
-    sql = "select count(1) from user where email = '%s'" % email
+    sql = "select count(1) from user where email='%s'" % email
     cursor.execute(sql)
     data = cursor.fetchone()
     return str(data[0])

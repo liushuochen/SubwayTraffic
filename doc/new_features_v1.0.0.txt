@@ -171,3 +171,6 @@ SubwayTraffic Platform dev0.3.0.B040
     4、【修复】admin用户获取session时报没有权限的bug
     5、【修复】项目在服务器上其它路径的启动bug
     6、【开发】增加判断用户是否存在的功能
+
+SubwayTraffic Platform dev0.3.0.B050
+    1、【开发】修改用户接口适配验证码

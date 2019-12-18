@@ -1,4 +1,10 @@
 import conductor.user
+import traceback
 
 if __name__ == '__main__':
-    print(conductor.user.code_exit("w77jdxyq-78p2-27qt-q83tev9ys"))
+    try:
+        uuid = "wdf8wid9-qnd4-efb2-3rdqwj31"
+        conductor.user.check_verify_code(uuid)
+        print("check success")
+    except Exception:
+        print(traceback.format_exc())

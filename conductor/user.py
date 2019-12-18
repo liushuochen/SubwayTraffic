@@ -9,6 +9,7 @@ Effect:             The SubwayTraffic Platform system conductor for user.
 
 import db.user
 import util
+import datetime
 from errors.HTTPcode import STPHTTPException, DBError
 from conductor import logger
 
@@ -137,3 +138,14 @@ def push_verify_code(receiver, code, operate):
 
 def is_user_exist(email):
     return db.user.is_user_exist(email)
+
+
+def check_verify_code(uuid):
+    detail = db.user.get_code_detail(uuid)
+    if len(detail) <= 0:
+        raise STPHTTPException("Can not find verification code for %s"
+                               % uuid, 404)
+    now = datetime.datetime.now()
+    code_create_time = detail[3]
+    if (now - code_create_time).seconds > 900:
+        raise STPHTTPException("The verification code has expired", 408)
