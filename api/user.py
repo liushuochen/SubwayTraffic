@@ -48,20 +48,30 @@ def user_list():
     return message, 200
 
 
-@user_blue.route("/isuserexist", methods=["POST"])
+@user_blue.route("/exist", methods=["POST"])
 def find_user():
     try:
         data = json.loads(flask.request.data)
         email = data.get("email", None)
         conductor.user.check_email(email)
     except STPHTTPException as e:
-        logger.debug("GET /user/v1/isuserexist - %s" % e.httpcode)
+        logger.debug("POST /user/v1/exist - %s" % e.httpcode)
         message = {
-            "error": "Invalid email format.",
-            "code": 400
+            "error": e.error_message,
+            "code": e.httpcode
         }
         message = json.dumps(message)
-        return message, 400
+        return message, e.httpcode
+    except json.decoder.JSONDecodeError:
+        logger.error("register user ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /user/v1/exist - 406")
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406
+        }
+        message = json.dumps(message)
+        return message, 406
     return conductor.user.is_user_exist(email)
 
 

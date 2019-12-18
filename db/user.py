@@ -143,4 +143,5 @@ def is_user_exist(email):
     sql = "select count(1) from user where email='%s'" % email
     cursor.execute(sql)
     data = cursor.fetchone()
+    engine.close()
     return str(data[0])
