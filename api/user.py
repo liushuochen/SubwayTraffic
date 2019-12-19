@@ -174,7 +174,7 @@ def update_user():
             "verify_code": data.get("verify_code", None)
         }
         util.check_param(**kwargs)
-        conductor.user.check_verify_code(uuid)
+        conductor.user.check_verify_code(**kwargs)
 
         if "new_email" in data:
             kwargs["new_email"] = data["new_email"]

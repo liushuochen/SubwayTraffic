@@ -140,11 +140,14 @@ def is_user_exist(email):
     return db.user.is_user_exist(email)
 
 
-def check_verify_code(uuid):
-    detail = db.user.get_code_detail(uuid)
+def check_verify_code(**kwargs):
+    detail = db.user.get_code_detail(kwargs["uuid"])
     if len(detail) <= 0:
         raise STPHTTPException("Can not find verification code for %s"
-                               % uuid, 404)
+                               % kwargs["uuid"], 404)
+
+    if kwargs["verify_code"] != detail[1]:
+        raise STPHTTPException("Wrong verification code input.", 403)
     now = datetime.datetime.now()
     code_create_time = detail[3]
     if (now - code_create_time).seconds > 900:
