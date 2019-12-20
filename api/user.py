@@ -53,6 +53,10 @@ def find_user():
     try:
         data = json.loads(flask.request.data)
         email = data.get("email", None)
+        kwargs = {
+            "email": email
+        }
+        util.check_param(**kwargs)
         conductor.user.check_email(email)
     except STPHTTPException as e:
         logger.debug("POST /user/v1/exist - %s" % e.httpcode)
