@@ -29,6 +29,7 @@ def get_all_user_detail():
         pre_data["type"] = pre_db_data[5]
         pre_data["create"] = \
             util.get_time_string_format(time_data=pre_db_data[6])
+        pre_data["status"] = pre_db_data[7]
         data.append(pre_data)
     engine.close()
     return data
@@ -36,7 +37,7 @@ def get_all_user_detail():
 
 def get_user_detail(email):
     engine, cursor = db.engine.get_engine()
-    sql = "select * from user where email=\"%s\"" % email
+    sql = "select * from user where email='%s'" % email
     cursor.execute(sql)
     data = cursor.fetchall()
     if not data:
@@ -50,18 +51,8 @@ def get_user_detail(email):
 # if username is a invalid username, update_token can not raise any errors
 def update_token(email, token):
     engine, cursor = db.engine.get_engine()
-    sql = "update user set token=\"%s\" where email=\"%s\"" % \
+    sql = "update user set token='%s' where email='%s'" % \
           (token, email)
-    cursor.execute(sql)
-    engine.commit()
-    engine.close()
-    return
-
-
-def update_pwd(username, password):
-    engine, cursor = db.engine.get_engine()
-    sql = "update user set password=\"%s\" where username=\"%s\"" % \
-          (password, username)
     cursor.execute(sql)
     engine.commit()
     engine.close()
@@ -91,7 +82,7 @@ def add_user(**kwargs):
     uuid = kwargs["uuid"]
     email = kwargs["email"]
     user_type = kwargs["user_type"]
-    sql = "insert into user values(%s, %s, %s, %s, %s, %s, %s)"
+    sql = "insert into user values(%s, %s, %s, %s, %s, %s, %s, default)"
     val = (uuid, email, username, password, token, user_type, create_time)
     cursor.execute(sql, val)
     engine.commit()
@@ -111,7 +102,7 @@ def add_code(uuid, code, operate, modify_time):
 
 def drop_user(uuid):
     engine, cursor = db.engine.get_engine()
-    sql = "delete from user where uuid=\"%s\"" % uuid
+    sql = "delete from user where uuid='%s'" % uuid
     cursor.execute(sql)
     engine.commit()
     engine.close()
