@@ -174,3 +174,4 @@ SubwayTraffic Platform dev0.3.0.B040
 
 SubwayTraffic Platform dev0.3.0.B050
     1、【开发】修改用户接口适配验证码
+    2、【开发】用户user表新字段status

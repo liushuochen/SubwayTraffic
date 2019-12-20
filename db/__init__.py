@@ -88,8 +88,9 @@ def create_user_table(config):
     username    varchar(24) default "subway user",
     password    varchar(18) not null,
     token       char(10) not null,
-    user_type        enum("admin", "user") not null default "user",
+    user_type   enum("admin", "user") not null default "user",
     create_time datetime not null,
+    status      enum("active", "down") not null default "active",
     primary key(uuid, email)
     ) charset utf8
     """
@@ -104,7 +105,7 @@ def create_user_table(config):
     token = util.general_token()
     user_type = Admin
     sql = "insert into user " \
-          "values(%s, %s, %s, %s, %s, %s, %s)"
+          "values(%s, %s, %s, %s, %s, %s, %s, default)"
     val = (uuid, email, admin_user, admin_pwd, token, user_type, now)
     cursor.execute(sql, val)
     engine.commit()
