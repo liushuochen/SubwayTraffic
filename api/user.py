@@ -73,16 +73,9 @@ def find_user():
         message = json.dumps(message)
         return message, 406
     is_exist = conductor.user.is_user_exist(email)
-    if is_exist == 1:
-        message = {"success": "user exist", "code": 200}
-        message = json.dumps(message)
-        logger.debug("Exist /user/v1/exist - 200")
-        logger.info("user %s is existed." % email)
-    else:
-        message = {"failed": "user does not exist", "code": 200}
-        message = json.dumps(message)
-        logger.debug("Exist /user/v1/exist - 200")
-        logger.info("user %s is not existed." % email)
+    message = {"is_exist": is_exist, "code": 200}
+    message = json.dumps(message)
+    logger.debug("POST /user/v1/exist - 200")
     return message, 200
 
 
