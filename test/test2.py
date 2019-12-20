@@ -1,10 +1,5 @@
-import conductor.user
-import traceback
+import db.user
 
 if __name__ == '__main__':
-    try:
-        uuid = "wdf8wid9-qnd4-efb2-3rdqwj31"
-        conductor.user.check_verify_code(uuid)
-        print("check success")
-    except Exception:
-        print(traceback.format_exc())
+    result = db.user.get_user_detail("gaoxiangyucc@qq.com")
+    print(result, type(result))

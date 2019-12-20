@@ -135,4 +135,5 @@ def is_user_exist(email):
     cursor.execute(sql)
     data = cursor.fetchone()
     engine.close()
-    return str(data[0])
+    # return str(data[0])
+    return data[0]

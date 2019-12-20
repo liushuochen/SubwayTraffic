@@ -68,9 +68,9 @@ def destroy(uuid):
 
 def user_detail(uuid):
     user_list = db.user.get_all_user_detail()
-    for user_detail in user_list:
-        if user_detail["uuid"] == uuid:
-            target_user = user_detail
+    for user_message in user_list:
+        if user_message["uuid"] == uuid:
+            target_user = user_message
             break
     else:
         raise STPHTTPException("can not find user %s" % uuid, 404)
@@ -137,7 +137,11 @@ def push_verify_code(receiver, code, operate):
 
 
 def is_user_exist(email):
-    return db.user.is_user_exist(email)
+    result = db.user.is_user_exist(email)
+    sample_detail = {"email": email, "exist": result}
+    if result == 1:
+        sample_detail["uuid"] = db.user.get_user_detail(email)[0]
+    return sample_detail
 
 
 def check_verify_code(**kwargs):
