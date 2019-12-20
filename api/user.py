@@ -63,7 +63,7 @@ def find_user():
         message = json.dumps(message)
         return message, e.httpcode
     except json.decoder.JSONDecodeError:
-        logger.error("register user ERROR: JSON decode failed.\n %s" %
+        logger.error("exist user ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("POST /user/v1/exist - 406")
         message = {
@@ -72,7 +72,18 @@ def find_user():
         }
         message = json.dumps(message)
         return message, 406
-    return conductor.user.is_user_exist(email)
+    is_exist = conductor.user.is_user_exist(email)
+    if is_exist == 1:
+        message = {"success": "user exist", "code": 200}
+        message = json.dumps(message)
+        logger.debug("Exist /user/v1/exist - 200")
+        logger.info("user %s is existed." % email)
+    else:
+        message = {"failed": "user does not exist", "code": 200}
+        message = json.dumps(message)
+        logger.debug("Exist /user/v1/exist - 200")
+        logger.info("user %s is not existed." % email)
+    return message, 200
 
 
 @user_blue.route("/register", methods=["POST"])
