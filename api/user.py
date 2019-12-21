@@ -174,12 +174,13 @@ def delete_user():
 def update_user():
     try:
         data = json.loads(flask.request.data)
-
         uuid = data.get("uuid", None)
         email = data.get("email", None)
+
         kwargs = {
             "uuid": uuid,
             "email": email,
+            "username": '',
             "verify_code": data.get("verify_code", None)
         }
         util.check_param(**kwargs)

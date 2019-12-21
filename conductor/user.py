@@ -80,6 +80,8 @@ def user_detail(uuid):
 
 def update(**kwargs):
     email = kwargs["email"]
+    username = db.user.get_user_detail(email)[2]
+    kwargs["username"] = username
     user_uuid = db.user.get_user_detail(email)[0]
     uuid = kwargs["uuid"]
     if user_uuid != uuid:
