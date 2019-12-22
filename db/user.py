@@ -135,5 +135,22 @@ def is_user_exist(email):
     cursor.execute(sql)
     data = cursor.fetchone()
     engine.close()
-    # return str(data[0])
     return data[0]
+
+
+def lock(uuid):
+    engine, cursor = db.engine.get_engine()
+    sql = "update user set status='lock' where uuid='%s'" % uuid
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
+    return
+
+
+def unlock(uuid):
+    engine, cursor = db.engine.get_engine()
+    sql = "update user set status='active' where uuid='%s'" % uuid
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
+    return

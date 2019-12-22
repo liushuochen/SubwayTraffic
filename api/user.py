@@ -12,7 +12,7 @@ import json
 import traceback
 import conductor.user
 import util
-from errors.HTTPcode import STPHTTPException, DBError
+from errors.HTTPcode import *
 from api import logger
 
 user_blue = flask.Blueprint("user_blue",
@@ -223,4 +223,110 @@ def update_user():
     message = json.dumps(message)
     logger.info("update user %s success." % uuid)
     logger.debug("PUT /user/v1/modify - 200")
+    return message, 200
+
+
+@user_blue.route("/lock", methods=["POST"])
+def lock():
+    try:
+        data = json.loads(flask.request.data)
+        uuid = data.get("uuid", None)
+        params = {"uuid": uuid}
+        util.check_param(**params)
+
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            message = {"error": "limited authority", "code": 401}
+            message = json.dumps(message)
+            logger.debug("POST /user/v1/lock - 401")
+            logger.warn("lock user %s WARNING: limited authority." % uuid)
+            return message, 401
+
+        conductor.user.lock(uuid)
+    except DuplicateException as e:
+        message = {
+            "success": e.error_message,
+            "code": e.httpcode
+        }
+        message = json.dumps(message)
+        logger.info(e.error_message)
+        logger.debug("POST /user/v1/lock - %s" % e.httpcode)
+        return message, e.httpcode
+    except STPHTTPException as e:
+        message = {"error": e.error_message, "code": e.httpcode}
+        message = json.dumps(message)
+        logger.debug("POST /user/v1/lock - %s" % e.httpcode)
+        logger.error("lock user ERROR:\n %s" % traceback.format_exc())
+        return message, e.httpcode
+    except json.decoder.JSONDecodeError as e:
+        logger.error("lock user ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /user/v1/lock - 406")
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406
+        }
+        message = json.dumps(message)
+        return message, 406
+
+    logger.info("user %s has been locked." % uuid)
+    message = {
+        "success": "user %s locked success" % uuid,
+        "code": 200
+    }
+    message = json.dumps(message)
+    return message, 200
+
+
+@user_blue.route("/unlock", methods=["POST"])
+def unlock():
+    try:
+        data = json.loads(flask.request.data)
+        uuid = data.get("uuid", None)
+        params = {"uuid": uuid}
+        util.check_param(**params)
+
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            message = {"error": "limited authority", "code": 401}
+            message = json.dumps(message)
+            logger.debug("POST /user/v1/unlock - 401")
+            logger.warn("unlock user %s WARNING: limited authority." % uuid)
+            return message, 401
+
+        conductor.user.unlock(uuid)
+    except DuplicateException as e:
+        message = {
+            "success": e.error_message,
+            "code": e.httpcode
+        }
+        message = json.dumps(message)
+        logger.info(e.error_message)
+        logger.debug("POST /user/v1/unlock - %s" % e.httpcode)
+        return message, e.httpcode
+    except STPHTTPException as e:
+        message = {"error": e.error_message, "code": e.httpcode}
+        message = json.dumps(message)
+        logger.debug("POST /user/v1/unlock - %s" % e.httpcode)
+        logger.error("unlock user ERROR:\n %s" % traceback.format_exc())
+        return message, e.httpcode
+    except json.decoder.JSONDecodeError as e:
+        logger.error("unlock user ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /user/v1/unlock - 406")
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406
+        }
+        message = json.dumps(message)
+        return message, 406
+
+    logger.info("unlock user %s success." % uuid)
+    message = {
+        "success": "unlock user %s success." % uuid,
+        "code": 200
+    }
+    message = json.dumps(message)
     return message, 200

@@ -90,7 +90,7 @@ def create_user_table(config):
     token       char(10) not null,
     user_type   enum("admin", "user") not null default "user",
     create_time datetime not null,
-    status      enum("active", "down") not null default "active",
+    status      enum("active", "down", "lock") not null default "active",
     primary key(uuid, email)
     ) charset utf8
     """

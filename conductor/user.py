@@ -10,7 +10,7 @@ Effect:             The SubwayTraffic Platform system conductor for user.
 import db.user
 import util
 import datetime
-from errors.HTTPcode import STPHTTPException, DBError
+from errors.HTTPcode import *
 from conductor import logger
 
 user_security_password_length = 8
@@ -158,3 +158,27 @@ def check_verify_code(**kwargs):
     code_create_time = detail[3]
     if (now - code_create_time).seconds > 900:
         raise STPHTTPException("The verification code has expired", 408)
+
+
+def lock(uuid):
+    locked_user = user_detail(uuid)
+    if locked_user["type"] == "admin":
+        raise STPHTTPException("can not lock admin user.", 403)
+    if locked_user["status"] == "lock":
+        raise DuplicateException("user %s has already locked." % uuid, 201)
+    if locked_user["status"] == "down":
+        raise STPHTTPException("can not lock down user %s." % uuid, 403)
+    db.user.lock(uuid)
+    return
+
+
+def unlock(uuid):
+    locked_user = user_detail(uuid)
+    if locked_user["type"] == "admin":
+        raise STPHTTPException("can not unlock admin user.", 403)
+    if locked_user["status"] == "active":
+        raise DuplicateException("user %s has already active." % uuid, 201)
+    if locked_user["status"] == "down":
+        raise STPHTTPException("can not unlock down user %s." % uuid, 403)
+    db.user.unlock(uuid)
+    return

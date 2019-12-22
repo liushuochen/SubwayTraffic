@@ -29,6 +29,10 @@ class STPHTTPException(Exception):
         return self.error_message
 
 
+class DuplicateException(STPHTTPException):
+    pass
+
+
 class DBError(Exception):
     def __init__(self, message, code):
         self.__message = message
