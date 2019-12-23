@@ -45,10 +45,16 @@ def verify_user(post_email, post_password):
         uuid = detail[0]
         password = detail[3]
         token = detail[4]
+        user_type = detail[5]
+        if user_type == "admin":
+            user_type = 0
+        else:
+            user_type = 1
+
         if post_password != password:
             logger.error("user %s can not login: Wrong email or password." %
                          post_email)
             raise STPHTTPException("Wrong email or password.", 404)
-        return uuid, token
+        return uuid, token, user_type
     except DBError as e:
         raise STPHTTPException(e.error_message, e.error_code)

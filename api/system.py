@@ -85,7 +85,7 @@ def login():
             "password": password
         }
         util.check_param(**kwargs)
-        uuid, token = conductor.system.verify_user(email, password)
+        uuid, token, user_type = conductor.system.verify_user(email, password)
         for history_token in util.session:
             if util.session[history_token] == uuid:
                 raise STPHTTPException("User logged in.", 403)
@@ -104,6 +104,7 @@ def login():
     message = {
         "login": True,
         "token": token,
+        "type": user_type,
         "code": 200
     }
     message = json.dumps(message)
@@ -118,7 +119,11 @@ def login():
 def logout():
     token = flask.request.headers.get("token", None)
     if token not in util.session:
-        message = {"logout": False, "error": "limited authority.", "code": 401}
+        message = {
+            "logout": False,
+            "error": "limited authority.",
+            "code": 401
+        }
         message = json.dumps(message)
         logger.warn("unknown user logout.")
         logger.debug("GET /system/v1/logout - 401")
