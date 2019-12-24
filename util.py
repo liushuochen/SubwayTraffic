@@ -109,3 +109,24 @@ def admin_email():
     conf.read(conf_path)
     email = conf.get("deploy", "admin_email")
     return email
+
+
+def get_tips(stp_code):
+    conf_path_en = get_root_path() + "/conf/tips_en.ini"
+    conf_path_zh = get_root_path() + "/conf/tips_zh.ini"
+    conf_en = configparser.ConfigParser()
+    conf_en.read(conf_path_en)
+    conf_zh = configparser.ConfigParser()
+    conf_zh.read(conf_path_zh)
+    tips_en = conf_en.get("tips_en", stp_code)
+    tips_zh = conf_zh.get("tips_zh", stp_code)
+    return tips_en, tips_zh
+
+
+def get_tips_dict(stp_code):
+    en, zh = get_tips(stp_code)
+    tips = {
+        "tips_en": en,
+        "tips_zh": zh
+    }
+    return tips

@@ -35,21 +35,18 @@ def after_request(resp):
 
 @system_blue.route("/version", methods=["GET"])
 def get_version():
-    token = flask.request.headers.get("token", None)
-    if token not in util.session:
-        message = {
-            "version": None,
-            "error": "limited authority",
-            "code": 401
-        }
-        message = json.dumps(message)
-        logger.debug("GET /system/v1/version - 401")
-        return message, 401
-
     try:
+        token = flask.request.headers.get("token", None)
+        if token not in util.session:
+            raise STPHTTPException("limited authority", 401, "10001")
         version = (conductor.system.get_version()).strip()
     except STPHTTPException as e:
-        message = {"version": None, "error": e.error_message, "code": e.httpcode}
+        message = {
+            "version": None,
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
         message = json.dumps(message)
         logger.debug("GET /system/v1/version - %s" % e.httpcode)
         return message, e.httpcode

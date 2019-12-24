@@ -23,7 +23,7 @@ def get_version():
     except FileNotFoundError:
         logger.error("get version failed. can not find version file.\n %s" %
                      traceback.format_exc())
-        raise STPHTTPException("can not found file: stp.version", 503)
+        raise STPHTTPException("can not found file: stp.version", 503, "10002")
     return version
 
 
