@@ -11,7 +11,6 @@ import flask
 import json
 import traceback
 import conductor.user
-import util
 from errors.HTTPcode import *
 from api import logger
 

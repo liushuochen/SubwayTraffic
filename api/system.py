@@ -139,10 +139,13 @@ def logout():
 @system_blue.route("/session", methods=["GET"])
 def get_session():
     token = flask.request.headers.get("token", None)
-    print(util.session)
     if (token not in util.session) or \
             (not conductor.user.is_admin_user(util.session[token])):
-        message = {"error": "limited authority", "code": 401}
+        message = {
+            "error": "limited authority",
+            "code": 401,
+            "tips": util.get_tips_dict(10006)
+        }
         message = json.dumps(message)
         logger.warn("Can not get session: limited authority!")
         logger.debug("GET /system/v1/session - 401")
