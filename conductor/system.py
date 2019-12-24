@@ -23,7 +23,7 @@ def get_version():
     except FileNotFoundError:
         logger.error("get version failed. can not find version file.\n %s" %
                      traceback.format_exc())
-        raise STPHTTPException("can not found file: stp.version", 503, "10002")
+        raise STPHTTPException("can not found file: stp.version", 503, 10002)
     return version
 
 
@@ -54,13 +54,13 @@ def verify_user(post_email, post_password):
         if post_password != password:
             logger.error("user %s can not login: Wrong email or password." %
                          post_email)
-            raise STPHTTPException("Wrong email or password.", 404)
+            raise STPHTTPException("Wrong email or password.", 404, 10101)
 
         status = detail[7]
         if status != "active":
             logger.error("user %s status is %s. can not login." %
                          (post_email, status))
-            raise STPHTTPException("Status ERROR.", 403)
+            raise STPHTTPException("Status ERROR.", 403, 10102)
         return uuid, token, user_type
     except DBError as e:
-        raise STPHTTPException(e.error_message, e.error_code)
+        raise STPHTTPException(e.error_message, e.error_code, 10103)

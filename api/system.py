@@ -38,7 +38,7 @@ def get_version():
     try:
         token = flask.request.headers.get("token", None)
         if token not in util.session:
-            raise STPHTTPException("limited authority", 401, "10001")
+            raise STPHTTPException("limited authority", 401, 10001)
         version = (conductor.system.get_version()).strip()
     except STPHTTPException as e:
         message = {
@@ -61,20 +61,20 @@ def get_version():
 def login():
     try:
         data = json.loads(flask.request.data)
+        email = data.get("email", None)
+        password = data.get("password", None)
+        logger.info("user %s login..." % email)
     except json.decoder.JSONDecodeError:
         logger.error("login ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("POST /system/v1/login - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406
-
-    email = data.get("email", None)
-    password = data.get("password", None)
-    logger.info("user %s login..." % email)
 
     try:
         kwargs = {
@@ -85,13 +85,14 @@ def login():
         uuid, token, user_type = conductor.system.verify_user(email, password)
         for history_token in util.session:
             if util.session[history_token] == uuid:
-                raise STPHTTPException("User logged in.", 403)
+                raise STPHTTPException("User logged in.", 403, 10100)
     except STPHTTPException as e:
         message = {
             "login": False,
             "token": None,
             "error": e.error_message,
-            "code": e.httpcode
+            "code": e.httpcode,
+            "tips": e.tip
         }
         message = json.dumps(message)
         logger.error("user %s login ERROR: %s." % (email, e.error_message))

@@ -187,3 +187,6 @@ SubwayTraffic Platform v1.RC1.0.3.0.B070
     2、【修复】登录适配lock状态
     3、【开发】中英文错误描述
     4、【修复】/system/v1/version 接口适配中英文描述
+
+SubwayTraffic Platform v1.RC1.0.3.0.B080
+    1、【修复】/system/v1/login 接口适配中英文描述

@@ -78,7 +78,7 @@ def check_param(**kwargs):
     for param in kwargs:
         if kwargs[param] is None:
             raise STPHTTPException("BadRequest: Invalid param %s request." %
-                                   param, 400)
+                                   param, 400, 10005)
     return
 
 
@@ -112,6 +112,7 @@ def admin_email():
 
 
 def get_tips(stp_code):
+    stp_code = str(stp_code)
     conf_path_en = get_root_path() + "/conf/tips_en.ini"
     conf_path_zh = get_root_path() + "/conf/tips_zh.ini"
     conf_en = configparser.ConfigParser()
@@ -127,6 +128,7 @@ def get_tips_dict(stp_code):
     en, zh = get_tips(stp_code)
     tips = {
         "tips_en": en,
-        "tips_zh": zh
+        "tips_zh": zh,
+        "stp_code": stp_code
     }
     return tips

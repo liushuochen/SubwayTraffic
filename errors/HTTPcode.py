@@ -33,7 +33,8 @@ class STPHTTPException(Exception):
         en, zh = util.get_tips(self.stp_code)
         message = {
             "tips_en": en,
-            "tips_zh": zh
+            "tips_zh": zh,
+            "stp_code": self.stp_code
         }
         return message
 
