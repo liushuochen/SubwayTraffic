@@ -120,7 +120,8 @@ def logout():
         message = {
             "logout": False,
             "error": "limited authority.",
-            "code": 401
+            "code": 401,
+            "tips": util.get_tips_dict(10001)
         }
         message = json.dumps(message)
         logger.warn("unknown user logout.")
