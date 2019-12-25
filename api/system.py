@@ -197,3 +197,14 @@ def show_process():
     logger.debug("GET /system/v1/process - 200")
     logger.warn("get process list.")
     return message, 200
+
+
+@system_blue.route("/live", methods=["GET", "POST"])
+def is_running():
+    now = util.get_time_string_format()
+    message = {
+        "detail": "SubwayTraffic service is running now %s" % now,
+        "code": 200
+    }
+    message = json.dumps(message)
+    return message, 200

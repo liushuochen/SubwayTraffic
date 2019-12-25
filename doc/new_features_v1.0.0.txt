@@ -192,3 +192,4 @@ SubwayTraffic Platform v1.RC1.0.3.0.B080
     1、【修复】/system/v1/login 接口适配中英文描述
     2、【修复】/system/v1/logout 接口适配中英文描述
     3、【修复】/system/v1/session 接口适配中英文描述
+    4、【开发】验证服务是否开启功能
