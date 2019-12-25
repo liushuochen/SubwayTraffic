@@ -118,7 +118,7 @@ def get_tips(stp_code):
     conf_en = configparser.ConfigParser()
     conf_en.read(conf_path_en)
     conf_zh = configparser.ConfigParser()
-    conf_zh.read(conf_path_zh)
+    conf_zh.read(conf_path_zh, encoding='utf-8')
     tips_en = conf_en.get("tips_en", stp_code)
     tips_zh = conf_zh.get("tips_zh", stp_code)
     return tips_en, tips_zh
