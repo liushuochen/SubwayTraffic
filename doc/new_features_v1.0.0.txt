@@ -197,3 +197,4 @@ SubwayTraffic Platform v1.RC1.0.3.0.B080
 
 SubwayTraffic Platform v1.RC1.0.3.0.B090
     1、【修复】获取进程栈列表功能无法判断登录用户的bug、适配中英文描述、修改日志打印不准确的错误
+    2、【修复】添加地铁线路功能无法判断登录用户的bug、适配中英文描述。

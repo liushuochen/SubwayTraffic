@@ -11,11 +11,13 @@ import flask
 import json
 import traceback
 import conductor.line
+import conductor.user
 import util
 from api import logger
 from errors.HTTPcode import STPHTTPException
 
 line_blue = flask.Blueprint("line_blue", __name__, url_prefix="/line/v1")
+
 
 @line_blue.after_request
 def after_request(resp):
@@ -37,38 +39,35 @@ def add_line():
         logger.debug("POST /line/v1/add - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406
 
     token = flask.request.headers.get("token", None)
-    if (token not in util.session) or (util.session[token] != "admin"):
-        message = {"error": "limited authority", "code": 401}
+    if (token not in util.session) or \
+            (not conductor.user.is_admin_user(util.session[token])):
+        message = {
+            "error": "limited authority",
+            "code": 401,
+            "tips": util.get_tips_dict(10006)
+        }
         message = json.dumps(message)
         logger.warn("add subway line WARNING: limited authority.")
         logger.debug("POST /line/v1/add - 401")
         return message, 401
 
     name = data.get("name", None)
-    logger.info("Begin to add subway line %s." % name)
-
-    if name is None:
-        message = {
-            "error": "BadRequest: Invalid subway name.",
-            "code": 400
-        }
-        message = json.dumps(message)
-        logger.error("add subway line ERROR: BadRequest: Invalid subway name.")
-        logger.debug("POST /line/v1/add - 400")
-        return message, 400
-
     try:
+        logger.info("Begin to add subway line %s." % name)
+        util.check_param(name=name)
         conductor.line.add_subway_line(name)
     except STPHTTPException as e:
         message = {
             "error": e.error_message,
-            "code": e.httpcode
+            "code": e.httpcode,
+            "tips": e.tip
         }
         message = json.dumps(message)
         logger.error("add subway line %s ERROR:\n%s"

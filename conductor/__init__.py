@@ -23,5 +23,6 @@ logger = LOG(
 process_stack = ProStack()
 process_queue = Queue()
 
+
 def init():
     process_stack.push(os.getpid())

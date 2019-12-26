@@ -27,7 +27,7 @@ def line_exist(param, model):
 def add_subway_line(subway_line_name):
     if line_exist(subway_line_name, "name"):
         raise STPHTTPException("subway line %s has been exist." % subway_line_name,
-                               403)
+                               403, 10200)
 
     uuid = util.generate_uuid(uuid_type="upper")
     db.line.add_subway_line(uuid, subway_line_name)

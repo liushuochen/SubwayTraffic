@@ -57,9 +57,9 @@ def get_log_path():
 # otherwise function will raise TypeError.
 def generate_uuid(uuid_type="lower"):
     if uuid_type == "lower":
-        pools = string.digits + string.ascii_lowercase
+        uuid_pools = string.digits + string.ascii_lowercase
     elif uuid_type == "upper":
-        pools = string.digits + string.ascii_uppercase
+        uuid_pools = string.digits + string.ascii_uppercase
     else:
         raise TypeError("Invalid uuid type %s." % uuid_type)
 
@@ -69,7 +69,7 @@ def generate_uuid(uuid_type="lower"):
         if length == 8 or length == 13 or length == 18:
             random_char_list.append("-")
             continue
-        random_char_list.append(random.choice(pools))
+        random_char_list.append(random.choice(uuid_pools))
     uuid = "".join(random_char_list)
     return uuid
 
