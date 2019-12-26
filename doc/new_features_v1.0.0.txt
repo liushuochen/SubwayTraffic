@@ -194,3 +194,6 @@ SubwayTraffic Platform v1.RC1.0.3.0.B080
     3、【修复】/system/v1/session 接口适配中英文描述
     4、【开发】验证服务是否开启功能
     5、【修复】读取配置文件时出现的字节码错误问题
+
+SubwayTraffic Platform v1.RC1.0.3.0.B090
+    1、【修复】获取进程栈列表功能无法判断登录用户的bug、适配中英文描述、修改日志打印不准确的错误

@@ -167,34 +167,50 @@ def show_process():
         logger.debug("POST /system/v1/process - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406
 
-    admin_password = data.get("password", None)
-
-    token = flask.request.headers.get("token", None)
-    if (token not in util.session) or (util.session[token] != "admin"):
-        message = {"error": "server shutdown failed", "code": 401}
-        message = json.dumps(message)
-        logger.warn("try to get process list failed.")
-        logger.debug("GET /system/v1/process - 401")
-        return message, 401
-
     try:
-        conductor.system.verify_user("admin", admin_password)
+        admin_password = data.get("password", None)
+        admin_email = data.get("email", None)
+        kwargs = {
+            "password": admin_password,
+            "email": admin_email
+        }
+        util.check_param(**kwargs)
+
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            message = {
+                "error": "get service process stack failed.",
+                "code": 401,
+                "tips": util.get_tips_dict(10006)
+            }
+            message = json.dumps(message)
+            logger.warn("try to get process list failed.")
+            logger.debug("POST /system/v1/process - 401")
+            return message, 401
+
+        conductor.system.verify_user(admin_email, admin_password)
         pro_list = conductor.process_stack.show()
     except STPHTTPException as e:
-        message = {"error": e.error_message, "code": e.httpcode}
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
         message = json.dumps(message)
-        logger.debug("GET /system/v1/shutdown - %s" % e.httpcode)
+        logger.debug("POST /system/v1/process - %s" % e.httpcode)
         logger.warn("try to get process list failed.")
         return message, e.httpcode
 
     message = {"process": pro_list, "code": 200}
     message = json.dumps(message)
-    logger.debug("GET /system/v1/process - 200")
+    logger.debug("POST /system/v1/process - 200")
     logger.warn("get process list.")
     return message, 200
 
