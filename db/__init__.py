@@ -46,6 +46,9 @@ def init():
     if "verify_code" not in tables:
         create_verify_code_table()
 
+    if "station" not in tables:
+        create_station_table()
+
     return
 
 
@@ -69,9 +72,26 @@ def create_subway_line_table():
     engine, cursor = db.engine.get_engine()
     sql = """
     create table subway_line(
-    uuid  char(27),
-    name  varchar(10),
-    primary key(uuid, name)
+    uuid  char(27) not null,
+    name  varchar(10) not null,
+    path  text not null,
+    primary key(name)
+    ) charset utf8
+    """
+    cursor.execute(sql)
+    engine.close()
+    return
+
+
+def create_station_table():
+    engine, cursor = db.engine.get_engine()
+    sql = """
+    create table station(
+    uuid      char(27) not null,
+    name      varchar(30),
+    next_stop text,
+    belong    tinytext,
+    primary key(name)
     ) charset utf8
     """
     cursor.execute(sql)
@@ -83,7 +103,7 @@ def create_user_table(config):
     engine, cursor = db.engine.get_engine()
     sql = """
     create table user(
-    uuid        char(27),
+    uuid        char(27) not null,
     email       varchar(30),
     username    varchar(24) default "subway user",
     password    varchar(18) not null,
@@ -91,7 +111,7 @@ def create_user_table(config):
     user_type   enum("admin", "user") not null default "user",
     create_time datetime not null,
     status      enum("active", "down", "lock") not null default "active",
-    primary key(uuid, email)
+    primary key(email)
     ) charset utf8
     """
     cursor.execute(sql)
