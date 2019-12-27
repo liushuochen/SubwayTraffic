@@ -36,7 +36,7 @@ def add_subway_line(subway_line_name):
 
 def delete_subway_line(uuid):
     if not line_exist(uuid, "uuid"):
-        raise STPHTTPException("subway %s has not exist." % uuid, 404)
+        raise STPHTTPException("subway %s has not exist." % uuid, 404, 10201)
     db.line.drop_subway_line(uuid)
     return
 

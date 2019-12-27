@@ -93,14 +93,20 @@ def delete_line():
         logger.debug("DELETE /line/v1/delete - 406")
         message = {
             "error": "invalid DELETE request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406
 
     token = flask.request.headers.get("token", None)
-    if (token not in util.session) or (util.session[token] != "admin"):
-        message = {"error": "limited authority", "code": 401}
+    if (token not in util.session) or \
+            (not conductor.user.is_admin_user(util.session[token])):
+        message = {
+            "error": "limited authority",
+            "code": 401,
+            "tips": util.get_tips_dict(10006)
+        }
         message = json.dumps(message)
         logger.warn("delete subway line WARNING: limited authority.")
         logger.debug("DELETE /line/v1/delete - 401")
@@ -108,23 +114,15 @@ def delete_line():
 
     uuid = data.get("uuid", None)
     logger.info("Begin to delete subway line %s." % uuid)
-
-    if uuid is None:
-        message = {
-            "error": "BadRequest: Invalid subway uuid.",
-            "code": 400
-        }
-        message = json.dumps(message)
-        logger.error("delete subway line ERROR: BadRequest: Invalid subway uuid.")
-        logger.debug("DELETE /line/v1/delete - 400")
-        return message, 400
-
     try:
+        kwargs = {"uuid": uuid}
+        util.check_param(**kwargs)
         conductor.line.delete_subway_line(uuid)
     except STPHTTPException as e:
         message = {
             "error": e.error_message,
-            "code": e.httpcode
+            "code": e.httpcode,
+            "tips": e.tip
         }
         message = json.dumps(message)
         logger.error("delete subway line %s ERROR:\n%s"

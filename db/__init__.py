@@ -74,7 +74,6 @@ def create_subway_line_table():
     create table subway_line(
     uuid  char(27) not null,
     name  varchar(10) not null,
-    path  text not null,
     primary key(name)
     ) charset utf8
     """
