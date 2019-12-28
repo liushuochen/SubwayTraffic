@@ -46,9 +46,11 @@ def update_line(**kwargs):
     name = kwargs["name"]
 
     if not line_exist(uuid, "uuid"):
-        raise STPHTTPException("subway %s has not exist." % uuid, 404)
+        raise STPHTTPException("subway %s has not exist." % uuid, 404, 10201)
     if line_exist(name, "name"):
-        raise STPHTTPException("subway name %s has already exist." % name, 403)
+        raise STPHTTPException("subway name %s has already exist." % name,
+                               403,
+                               10202)
 
     db.line.update_subway_line(uuid, name)
     return

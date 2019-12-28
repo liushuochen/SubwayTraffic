@@ -146,13 +146,22 @@ def update_line(context):
         logger.error("modify subway line ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("PUT /line/v1/modify/%s - 406" % context)
-        message = {"error": "invalid PUT request: JSON decode failed.", "code": 406}
+        message = {
+            "error": "invalid PUT request: JSON decode failed.",
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
+        }
         message = json.dumps(message)
         return message, 406
 
     token = flask.request.headers.get("token", None)
-    if (token not in util.session) or (util.session[token] != "admin"):
-        message = {"error": "limited authority", "code": 401}
+    if (token not in util.session) or \
+            (not conductor.user.is_admin_user(util.session[token])):
+        message = {
+            "error": "limited authority",
+            "code": 401,
+            "tips": util.get_tips_dict(10006)
+        }
         message = json.dumps(message)
         logger.warn("update subway line WARNING: limited authority.")
         logger.debug("PUT /line/v1/modify/%s - 401" % context)
@@ -161,26 +170,18 @@ def update_line(context):
     if context == "name":
         uuid = data.get("uuid", None)
         new_name = data.get("name", None)
-        if uuid is None or new_name is None:
-            message = {
-                "error": "BadRequest: Invalid param.",
-                "code": 400
-            }
-            message = json.dumps(message)
-            logger.debug("PUT /line/v1/modify/%s - 406" % context)
-            logger.error("update subway line ERROR: BadRequest: Invalid param.")
-            return message, 400
-
         try:
             param = {
                 "uuid": uuid,
                 "name": new_name
             }
+            util.check_param(**param)
             conductor.line.update_line(**param)
         except STPHTTPException as e:
             message = {
                 "error": e.error_message,
-                "code": e.httpcode
+                "code": e.httpcode,
+                "tips": e.tip
             }
             message = json.dumps(message)
             logger.error("update subway line %s name ERROR:\n%s"
@@ -197,7 +198,8 @@ def update_line(context):
     else:
         message = {
             "error": "unknown modify request - '%s'" % context,
-            "code": 404
+            "code": 404,
+            "tips": util.get_tips_dict(10007)
         }
         message = json.dumps(message)
         return message, 404
