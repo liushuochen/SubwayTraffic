@@ -203,3 +203,4 @@ SubwayTraffic Platform v1.RC1.0.4.0
     1、【开发】增加station表，修改subway_line表和user表的结构
     2、【修复】删除地铁线路功能无法判断登录用户的bug、适配中英文描述
     3、【开发】404页面
+    4、【修复】获取用户列表适配中英文错误提示
