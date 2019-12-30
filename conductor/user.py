@@ -113,7 +113,7 @@ def update(**kwargs):
 
 def check_email(email):
     if email.count("@") != 1 or email[-4:] != ".com":
-        raise STPHTTPException("Invalid email format %s." % email, 400)
+        raise STPHTTPException("Invalid email format %s." % email, 400, 10104)
 
 
 def is_admin_user(uuid):

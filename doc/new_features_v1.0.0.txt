@@ -207,3 +207,4 @@ SubwayTraffic Platform v1.RC1.0.4.0
 
 SubwayTraffic Platform v1.RC1.0.4.0.B010
     1、【开发】添加subway_line内存存储
+    2、【修复】验证用户是否存在适配中英文错误提示

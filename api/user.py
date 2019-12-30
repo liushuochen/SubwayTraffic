@@ -66,7 +66,8 @@ def find_user():
         logger.debug("POST /user/v1/exist - %s" % e.httpcode)
         message = {
             "error": e.error_message,
-            "code": e.httpcode
+            "code": e.httpcode,
+            "tips": e.tip
         }
         message = json.dumps(message)
         return message, e.httpcode
@@ -76,10 +77,12 @@ def find_user():
         logger.debug("POST /user/v1/exist - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406
+
     exit_detail = conductor.user.is_user_exist(email)
     message = exit_detail
     message["code"] = 200
