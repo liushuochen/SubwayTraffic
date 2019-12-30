@@ -204,3 +204,6 @@ SubwayTraffic Platform v1.RC1.0.4.0
     2、【修复】删除地铁线路功能无法判断登录用户的bug、适配中英文描述
     3、【开发】404页面
     4、【修复】获取用户列表适配中英文错误提示
+
+SubwayTraffic Platform v1.RC1.0.4.0.B010
+    1、【开发】添加subway_line内存存储

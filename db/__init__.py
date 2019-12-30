@@ -10,6 +10,7 @@ Effect:             The SubwayTraffic Platform system database init
 import configparser
 import util
 import db.engine
+import db.line
 from logs.logger import LOG
 
 log_path = util.get_log_path()
@@ -49,7 +50,8 @@ def init():
     if "station" not in tables:
         create_station_table()
 
-    return
+    lines = db.line.line_list()
+    return lines
 
 
 def create_verify_code_table():

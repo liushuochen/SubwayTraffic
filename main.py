@@ -15,6 +15,7 @@ import logs
 import conductor
 import server_init
 import util
+import compute
 from api import logger
 
 conf = configparser.ConfigParser()
@@ -60,7 +61,8 @@ def init():
 
     # TODO: if host mysql server do not start, db.init() will raise
     # mysql.connector.errors.InterfaceError.
-    db.init()
+    lines = db.init()
+    compute.init(lines=lines)
 
 
 if __name__ == '__main__':
