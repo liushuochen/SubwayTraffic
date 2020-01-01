@@ -8,8 +8,8 @@ Effect:             The SubwayTraffic Platform system conductor for user.
 """
 
 import db.user
-import util
 import datetime
+import re
 from errors.HTTPcode import *
 from conductor import logger
 
@@ -112,7 +112,8 @@ def update(**kwargs):
 
 
 def check_email(email):
-    if email.count("@") != 1 or email[-4:] != ".com":
+    pattern = r"^([\w]+)\@([\w]+)\.\w{2,3}"
+    if not re.match(pattern, email):
         raise STPHTTPException("Invalid email format %s." % email, 400, 10104)
 
 
