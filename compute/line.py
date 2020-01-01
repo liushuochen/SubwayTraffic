@@ -15,3 +15,14 @@ class Line(object):
         self.name = kwargs["name"]
         self.uuid = kwargs["uuid"]
         self.next = None
+
+
+def line_list():
+    all_line = []
+    for line_name in lines:
+        line_instance = lines[line_name]
+        subway_line = {}
+        subway_line["name"] = line_instance.name
+        subway_line["uuid"] = line_instance.uuid
+        all_line.append(subway_line)
+    return all_line

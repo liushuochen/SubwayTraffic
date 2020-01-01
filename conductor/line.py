@@ -69,7 +69,7 @@ def update_line(**kwargs):
 
 
 def get_all_line():
-    return db.line.line_list()
+    return compute.line.line_list()
 
 
 def details(uuid):
