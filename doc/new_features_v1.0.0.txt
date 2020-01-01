@@ -212,3 +212,4 @@ SubwayTraffic Platform v1.RC1.0.4.0.B010
 
 SubwayTraffic Platform v1.RC1.0.4.0.B020
     1、获取地铁线列表适配subway_line内存数据
+    2、用户注册适配中英文提示

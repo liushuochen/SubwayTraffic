@@ -101,7 +101,9 @@ def register_user():
         logger.debug("POST /user/v1/register - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
+
         }
         message = json.dumps(message)
         return message, 406
@@ -118,7 +120,11 @@ def register_user():
         conductor.user.check_email(email)
         conductor.user.register(**kwargs)
     except STPHTTPException as e:
-        message = {"error": e.error_message, "code": e.httpcode}
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
         message = json.dumps(message)
         logger.error("register user ERROR: %s\n%s." %
                      (e.error_message, traceback.format_exc()))

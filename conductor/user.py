@@ -35,9 +35,13 @@ def register(**kwargs):
     email_set = available_email()
     if kwargs["email"] in email_set:
         raise STPHTTPException("The email %s already exist"
-                               % kwargs["email"], 403)
+                               % kwargs["email"],
+                               403,
+                               10105)
     if len(kwargs["password"]) < user_security_password_length:
-        raise STPHTTPException("Password length must more than 8.", 403)
+        raise STPHTTPException("Password length must more than 8.",
+                               403,
+                               10106)
 
     try:
         kwargs["uuid"] = util.generate_uuid()
