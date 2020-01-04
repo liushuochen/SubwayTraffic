@@ -66,3 +66,12 @@ def line_list():
         pre_data["name"] = temp_data[1]
         lines.append(pre_data)
     return lines
+
+
+def line_exist(uuid):
+    engine, cursor = db.engine.get_engine()
+    sql = "select count(1) from subway_line where uuid='%s'" % uuid
+    cursor.execute(sql)
+    data = cursor.fetchone()
+    engine.close()
+    return data[0]

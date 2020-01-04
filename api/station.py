@@ -8,6 +8,12 @@ Effect:             The SubwayTraffic Platform system subway station operate api
 """
 
 import flask
+import json
+import traceback
+import conductor.user
+import conductor.station
+from api import logger
+from errors.HTTPcode import *
 
 station_blue = flask.Blueprint("station_blue", __name__, url_prefix="/station/v1")
 
@@ -24,4 +30,54 @@ def after_request(resp):
 
 @station_blue.route("/add", methods=["POST"])
 def add_station():
-    pass
+    try:
+        data = json.loads(flask.request.data)
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            message = {
+                "error": "limited authority",
+                "code": 401,
+                "tips": util.get_tips_dict(10006)
+            }
+            message = json.dumps(message)
+            logger.warn("add subway station WARNING: limited authority.")
+            logger.debug("POST /station/v1/add - 401")
+            return message, 401
+    except json.decoder.JSONDecodeError:
+        logger.error("add subway station ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /station/v1/add - 406")
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
+        }
+        message = json.dumps(message)
+        return message, 406
+
+    name = data.get("name", None)
+    try:
+        params = {
+            "name": name,
+        }
+        util.check_param(**params)
+        conductor.station.add_station(**params)
+    except STPHTTPException as e:
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
+        message = json.dumps(message)
+        logger.error("add subway station %s ERROR:\n%s"
+                     % (name, traceback.format_exc()))
+        logger.debug("POST /station/v1/add - %s" % e.httpcode)
+        return message, e.httpcode
+
+    message = {
+        "success": "add station %s success" % name,
+        "code": 200
+    }
+    message = json.dumps(message)
+    return message, 200

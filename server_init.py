@@ -11,15 +11,16 @@ from api.system import system_blue
 from api.line import line_blue
 from api.user import user_blue
 from api.email import email_blue
+from api.station import station_blue
 
 
 def register(app):
-    print(type(app))
     blue_prints = [
         system_blue,
         line_blue,
         user_blue,
-        email_blue
+        email_blue,
+        station_blue
     ]
 
     for blue_print in blue_prints:
