@@ -343,3 +343,30 @@ def unlock():
     }
     message = json.dumps(message)
     return message, 200
+
+
+@user_blue.route("/live", methods=["POST"])
+def is_live():
+    try:
+        data = json.loads(flask.request.data)
+    except json.decoder.JSONDecodeError:
+        message = {
+            "error": "JSON decode failed.",
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
+        }
+        message = json.dumps(message)
+        return message, 406
+
+    post_token = data.get("token", None)
+    if post_token in util.session:
+        is_login = True
+    else:
+        is_login = False
+
+    message = {
+        "is_login": is_login,
+        "code": 200
+    }
+    message = json.dumps(message)
+    return message, 200
