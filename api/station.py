@@ -81,3 +81,56 @@ def add_station():
     }
     message = json.dumps(message)
     return message, 200
+
+
+@station_blue.route("/delete", methods=["DELETE"])
+def delete_station():
+    try:
+        data = json.loads(flask.request.data)
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            message = {
+                "error": "limited authority",
+                "code": 401,
+                "tips": util.get_tips_dict(10006)
+            }
+            message = json.dumps(message)
+            logger.warn("add subway station WARNING: limited authority.")
+            logger.debug("POST /station/v1/add - 401")
+            return message, 401
+    except json.decoder.JSONDecodeError:
+        logger.error("add subway station ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("POST /station/v1/add - 406")
+        message = {
+            "error": "invalid POST request: JSON decode failed.",
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
+        }
+        message = json.dumps(message)
+        return message, 406
+
+    uuid = data.get("uuid", None)
+    try:
+        params = {"uuid": uuid}
+        util.check_param(**params)
+        conductor.station.delete(uuid)
+    except STPHTTPException as e:
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
+        message = json.dumps(message)
+        logger.error("delete subway station %s ERROR:\n%s"
+                     % (uuid, traceback.format_exc()))
+        logger.debug("DELETE /station/v1/delete - %s" % e.httpcode)
+        return message, e.httpcode
+
+    message = {
+        "success": "delete subway station %s success." % uuid,
+        "code": 200
+    }
+    message = json.dumps(message)
+    return message, 200
