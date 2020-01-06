@@ -64,7 +64,7 @@ def available_email():
 def destroy(uuid):
     delete_user = user_detail(uuid)
     if delete_user["type"] == "admin":
-        raise STPHTTPException("can not delete admin user.", 403)
+        raise STPHTTPException("can not delete admin user.", 403, 10107)
 
     db.user.drop_user(uuid)
     return
@@ -77,7 +77,7 @@ def user_detail(uuid):
             target_user = user_message
             break
     else:
-        raise STPHTTPException("can not find user %s" % uuid, 404)
+        raise STPHTTPException("can not find user %s" % uuid, 404, 10108)
 
     return target_user
 

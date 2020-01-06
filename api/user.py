@@ -150,7 +150,11 @@ def delete_user():
         token = flask.request.headers.get("token", None)
         if (token not in util.session) or \
                 (not conductor.user.is_admin_user(util.session[token])):
-            message = {"error": "limited authority", "code": 401}
+            message = {
+                "error": "limited authority",
+                "code": 401,
+                "tips": util.get_tips_dict(10006)
+            }
             message = json.dumps(message)
             logger.debug("DELETE /user/v1/delete - 401")
             logger.warn("delete user WARNING: limited authority.")
@@ -161,7 +165,11 @@ def delete_user():
     except STPHTTPException as e:
         logger.error("delete user ERROR:\n %s" % traceback.format_exc())
         logger.debug("DELETE /user/v1/delete - %s" % e.httpcode)
-        message = {"error": e.error_message, "code": e.httpcode}
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
         message = json.dumps(message)
         return message, e.httpcode
 
@@ -171,7 +179,8 @@ def delete_user():
         logger.debug("DELETE /user/v1/delete - 406")
         message = {
             "error": "invalid DELETE request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406
