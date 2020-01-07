@@ -47,9 +47,9 @@ def delete_subway_line(uuid):
 
     for subway_line in compute.line.lines:
         if compute.line.lines[subway_line].uuid == uuid:
-            destory_subway = subway_line
+            destroy_subway = subway_line
 
-    compute.line.lines.pop(destory_subway)
+    compute.line.lines.pop(destroy_subway)
     return
 
 
