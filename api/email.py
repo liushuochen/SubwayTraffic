@@ -15,6 +15,7 @@ import conductor.user
 import traceback
 from errors.HTTPcode import STPHTTPException
 from api import logger
+from utils.httputils import http_code
 
 email_blue = flask.Blueprint("email_blue", __name__, url_prefix="/email/v1")
 
@@ -57,7 +58,7 @@ def send_code_email():
 
         message = {
             "success": "send to %s success." % kwargs["receiver"],
-            "code": 200
+            "code": http_code.OK
         }
         message = json.dumps(message)
     except STPHTTPException as e:
@@ -75,9 +76,9 @@ def send_code_email():
         logger.debug("POST /user/v1/register - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406
+            "code": http_code.NotAcceptable
         }
         message = json.dumps(message)
-        return message, 406
+        return message, http_code.NotAcceptable
 
-    return message, 200
+    return message, http_code.OK
