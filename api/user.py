@@ -221,18 +221,27 @@ def update_user():
         logger.debug("PUT /user/v1/modify - 406")
         message = {
             "error": "invalid PUT request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406
     except STPHTTPException as e:
-        message = {"error": e.error_message, "code": e.httpcode}
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
         message = json.dumps(message)
         logger.debug("PUT /user/v1/modify - %s" % e.httpcode)
         logger.error("modify user ERROR:\n %s" % traceback.format_exc())
         return message, e.httpcode
     except DBError as e:
-        message = {"error": e.error_message, "code": e.error_code}
+        message = {
+            "error": e.error_message,
+            "code": e.error_code,
+            "tips": util.get_tips_dict(10108)
+        }
         message = json.dumps(message)
         logger.debug("PUT /user/v1/modify - %s" % e.error_code)
         logger.error("modify user ERROR:\n %s" % traceback.format_exc())

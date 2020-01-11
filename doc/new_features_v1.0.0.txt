@@ -223,3 +223,4 @@ SubwayTraffic Platform v1.RC1.0.4.0.B030
 
 SubwayTraffic Platform v1.RC1.0.4.0.B040
     1、定义http常量
+    2、修改用户适配中英文提示

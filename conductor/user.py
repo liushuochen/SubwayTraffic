@@ -89,7 +89,7 @@ def update(**kwargs):
     user_uuid = db.user.get_user_detail(email)[0]
     uuid = kwargs["uuid"]
     if user_uuid != uuid:
-        raise STPHTTPException("Invalid uuid %s" % uuid, 403)
+        raise STPHTTPException("Invalid uuid %s" % uuid, 403, 10108)
 
     params = {"uuid": uuid}
     if "new_password" in kwargs:
@@ -97,7 +97,7 @@ def update(**kwargs):
     else:
         params["password"] = kwargs["password"]
     if len(params["password"]) < user_security_password_length:
-        raise STPHTTPException("Password length must more than 8.", 403)
+        raise STPHTTPException("Password length must more than 8.", 403, 10106)
 
     if "new_email" in kwargs:
         params["email"] = kwargs["new_email"]
@@ -155,14 +155,14 @@ def check_verify_code(**kwargs):
     detail = db.user.get_code_detail(kwargs["uuid"])
     if len(detail) <= 0:
         raise STPHTTPException("Can not find verification code for %s"
-                               % kwargs["uuid"], 404)
+                               % kwargs["uuid"], 404, 10008)
 
     if kwargs["verify_code"] != detail[1]:
-        raise STPHTTPException("Wrong verification code input.", 403)
+        raise STPHTTPException("Wrong verification code input.", 403, 10008)
     now = datetime.datetime.now()
     code_create_time = detail[3]
     if (now - code_create_time).seconds > 900:
-        raise STPHTTPException("The verification code has expired", 408)
+        raise STPHTTPException("The verification code has expired", 408, 10009)
 
 
 def lock(uuid):
