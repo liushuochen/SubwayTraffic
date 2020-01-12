@@ -26,3 +26,10 @@ def line_list():
         subway_line["uuid"] = line_instance.uuid
         all_line.append(subway_line)
     return all_line
+
+
+def delete_line(uuid):
+    for subway_line in lines:
+        if lines[subway_line].uuid == uuid:
+            lines.pop(subway_line)
+            break
