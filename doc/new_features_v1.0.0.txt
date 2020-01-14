@@ -225,3 +225,6 @@ SubwayTraffic Platform v1.RC1.0.4.0.B040
     1、定义http常量
     2、修改用户适配中英文提示
     3、优化地铁线路删除操作
+
+SubwayTraffic Platform v1.RC1.0.4.0.B050
+    1、修改地铁站功能开发

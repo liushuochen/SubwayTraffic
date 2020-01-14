@@ -96,15 +96,15 @@ def delete_station():
                 "tips": util.get_tips_dict(10006)
             }
             message = json.dumps(message)
-            logger.warn("add subway station WARNING: limited authority.")
-            logger.debug("POST /station/v1/add - 401")
+            logger.warn("delete subway station WARNING: limited authority.")
+            logger.debug("DELETE /station/v1/delete - 401")
             return message, 401
     except json.decoder.JSONDecodeError:
-        logger.error("add subway station ERROR: JSON decode failed.\n %s" %
+        logger.error("delete subway station ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
-        logger.debug("POST /station/v1/add - 406")
+        logger.debug("DELETE /station/v1/delete - 406")
         message = {
-            "error": "invalid POST request: JSON decode failed.",
+            "error": "invalid DELETE request: JSON decode failed.",
             "code": 406,
             "tips": util.get_tips_dict(10004)
         }
@@ -133,4 +133,60 @@ def delete_station():
         "code": 200
     }
     message = json.dumps(message)
+    logger.debug("PUT /station/v1/update - 200")
+    return message, 200
+
+
+@station_blue.route("/update", methods=["PUT"])
+def update_station():
+    try:
+        data = json.loads(flask.request.data)
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            message = {
+                "error": "limited authority",
+                "code": 401,
+                "tips": util.get_tips_dict(10006)
+            }
+            message = json.dumps(message)
+            logger.warn("update subway station WARNING: limited authority.")
+            logger.debug("PUT /station/v1/update - 401")
+            return message, 401
+    except json.decoder.JSONDecodeError:
+        logger.error("update subway station ERROR: JSON decode failed.\n %s" %
+                     traceback.format_exc())
+        logger.debug("PUT /station/v1/update - 406")
+        message = {
+            "error": "invalid PUT request: JSON decode failed.",
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
+        }
+        message = json.dumps(message)
+        return message, 406
+
+    uuid = data.get("uuid", None)
+    new_name = data.get("name", None)
+    try:
+        params = {"uuid": uuid, "name": new_name}
+        util.check_param(**params)
+        conductor.station.update(uuid, new_name)
+    except STPHTTPException as e:
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
+        message = json.dumps(message)
+        logger.error("update subway station %s ERROR:\n%s"
+                     % (uuid, traceback.format_exc()))
+        logger.debug("PUT /station/v1/update - %s" % e.httpcode)
+        return message, e.httpcode
+
+    message = {
+        "success": "update subway station %s success." % uuid,
+        "code": 200
+    }
+    message = json.dumps(message)
+    logger.debug("PUT /station/v1/update - 200")
     return message, 200

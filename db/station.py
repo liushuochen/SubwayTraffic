@@ -54,3 +54,12 @@ def delete(uuid):
     sql = "delete from station where uuid='%s'" % uuid
     cursor.execute(sql)
     return
+
+
+def update(uuid, name):
+    engine, cursor = db.engine.get_engine()
+    sql = "update station set name='%s' where uuid='%s'" % (name, uuid)
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
+    return

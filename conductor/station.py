@@ -33,7 +33,7 @@ def delete(uuid):
         )
 
     station_detail = db.station.detail(uuid)
-    if station_detail["belong"] is None:
+    if station_detail["belong"] is not None:
         raise STPHTTPException(
             "The subway station %s is in a bind." % uuid,
             403,
@@ -41,4 +41,24 @@ def delete(uuid):
         )
 
     db.station.delete(uuid)
+    return
+
+
+def update(uuid, name):
+    if not db.station.exist(uuid, types="uuid"):
+        raise STPHTTPException(
+            "subway station %s has not exist." % uuid,
+            404,
+            10301
+        )
+
+    station_detail = db.station.detail(uuid)
+    if station_detail["belong"] is not None:
+        raise STPHTTPException(
+            "The subway station %s is in a bind." % uuid,
+            403,
+            10302
+        )
+
+    db.station.update(uuid, name)
     return
