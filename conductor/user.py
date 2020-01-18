@@ -168,11 +168,11 @@ def check_verify_code(**kwargs):
 def lock(uuid):
     locked_user = user_detail(uuid)
     if locked_user["type"] == "admin":
-        raise STPHTTPException("can not lock admin user.", 403)
+        raise STPHTTPException("can not lock admin user.", 403, 10109)
     if locked_user["status"] == "lock":
         raise DuplicateException("user %s has already locked." % uuid, 201)
     if locked_user["status"] == "down":
-        raise STPHTTPException("can not lock down user %s." % uuid, 403)
+        raise STPHTTPException("can not lock down user %s." % uuid, 403, 10110)
     db.user.lock(uuid)
     return
 
