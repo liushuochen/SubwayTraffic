@@ -15,6 +15,7 @@ import conductor.user
 import util
 from api import logger
 from errors.HTTPcode import STPHTTPException
+from utils.httputils import http_code
 
 line_blue = flask.Blueprint("line_blue", __name__, url_prefix="/line/v1")
 
@@ -39,24 +40,24 @@ def add_line():
         logger.debug("POST /line/v1/add - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406,
+            "code": http_code.NotAcceptable,
             "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
-        return message, 406
+        return message, http_code.NotAcceptable
 
     token = flask.request.headers.get("token", None)
     if (token not in util.session) or \
             (not conductor.user.is_admin_user(util.session[token])):
         message = {
             "error": "limited authority",
-            "code": 401,
+            "code": http_code.Unauthorized,
             "tips": util.get_tips_dict(10006)
         }
         message = json.dumps(message)
         logger.warn("add subway line WARNING: limited authority.")
         logger.debug("POST /line/v1/add - 401")
-        return message, 401
+        return message, http_code.Unauthorized
 
     name = data.get("name", None)
     try:
@@ -77,10 +78,10 @@ def add_line():
 
     message = {
         "success": "add subway line %s success." % name,
-        "code": 200
+        "code": http_code.OK
     }
     message = json.dumps(message)
-    return message, 200
+    return message, http_code.OK
 
 
 @line_blue.route("/delete", methods=["DELETE"])
