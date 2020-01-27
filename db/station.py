@@ -63,3 +63,21 @@ def update(uuid, name):
     engine.commit()
     engine.close()
     return
+
+
+def get_list():
+    engine, cursor = db.engine.get_engine()
+    sql = "select * from station"
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    station_list = []
+    for station in data:
+        each_detail = {}
+        each_detail["uuid"] = station[0]
+        each_detail["name"] = station[1]
+        if station[3] is None:
+            each_detail["belong"] = []
+        else:
+            each_detail["belong"] = station[3].split(",")
+        station_list.append(each_detail)
+    return station_list

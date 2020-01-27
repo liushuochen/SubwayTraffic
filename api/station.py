@@ -190,3 +190,30 @@ def update_station():
     message = json.dumps(message)
     logger.debug("PUT /station/v1/update - 200")
     return message, 200
+
+
+@station_blue.route("/list", methods=["GET"])
+def station_list():
+    try:
+        token = flask.request.headers.get("token", None)
+        if (token not in util.session) or \
+                (not conductor.user.is_admin_user(util.session[token])):
+            raise STPHTTPException("limited authority", 401, 10001)
+        stations = conductor.station.get_list()
+    except STPHTTPException as e:
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
+        message = json.dumps(message)
+        logger.debug("GET /station/v1/list - %s" % e.httpcode)
+        return message, e.httpcode
+
+    message = {
+        "stations": stations,
+        "code": 200
+    }
+    message = json.dumps(message)
+    logger.debug("GET /station/v1/list - 200")
+    return message, 200

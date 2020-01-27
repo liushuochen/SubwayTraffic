@@ -62,3 +62,8 @@ def update(uuid, name):
 
     db.station.update(uuid, name)
     return
+
+
+def get_list():
+    station_list = db.station.get_list()
+    return station_list
