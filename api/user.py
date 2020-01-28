@@ -330,7 +330,11 @@ def unlock():
         token = flask.request.headers.get("token", None)
         if (token not in util.session) or \
                 (not conductor.user.is_admin_user(util.session[token])):
-            message = {"error": "limited authority", "code": 401}
+            message = {
+                "error": "limited authority",
+                "code": 401,
+                "tips": util.get_tips_dict(10006)
+            }
             message = json.dumps(message)
             logger.debug("POST /user/v1/unlock - 401")
             logger.warn("unlock user %s WARNING: limited authority." % uuid)
@@ -347,18 +351,23 @@ def unlock():
         logger.debug("POST /user/v1/unlock - %s" % e.httpcode)
         return message, e.httpcode
     except STPHTTPException as e:
-        message = {"error": e.error_message, "code": e.httpcode}
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
         message = json.dumps(message)
         logger.debug("POST /user/v1/unlock - %s" % e.httpcode)
         logger.error("unlock user ERROR:\n %s" % traceback.format_exc())
         return message, e.httpcode
-    except json.decoder.JSONDecodeError as e:
+    except json.decoder.JSONDecodeError:
         logger.error("unlock user ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
         logger.debug("POST /user/v1/unlock - 406")
         message = {
             "error": "invalid POST request: JSON decode failed.",
-            "code": 406
+            "code": 406,
+            "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
         return message, 406

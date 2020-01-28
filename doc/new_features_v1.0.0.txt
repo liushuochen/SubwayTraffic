@@ -233,3 +233,4 @@ SubwayTraffic Platform v1.RC1.0.4.0.B050
 
 SubwayTraffic Platform v1.RC1.0.4.0.B060
     1、获取全部地铁站列表
+    2、unlock用户适配中英文提示

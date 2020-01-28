@@ -180,10 +180,10 @@ def lock(uuid):
 def unlock(uuid):
     locked_user = user_detail(uuid)
     if locked_user["type"] == "admin":
-        raise STPHTTPException("can not unlock admin user.", 403)
+        raise STPHTTPException("can not unlock admin user.", 403, 10111)
     if locked_user["status"] == "active":
         raise DuplicateException("user %s has already active." % uuid, 201)
     if locked_user["status"] == "down":
-        raise STPHTTPException("can not unlock down user %s." % uuid, 403)
+        raise STPHTTPException("can not unlock down user %s." % uuid, 403, 10110)
     db.user.unlock(uuid)
     return
