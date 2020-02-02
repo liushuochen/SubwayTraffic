@@ -85,33 +85,33 @@ def add_line():
 
 
 @line_blue.route("/delete", methods=["DELETE"])
-def delete_line():
+def delete():
     try:
         data = json.loads(flask.request.data)
     except json.decoder.JSONDecodeError:
         logger.error("delete subway line ERROR: JSON decode failed.\n %s" %
                      traceback.format_exc())
-        logger.debug("DELETE /line/v1/delete - 406")
+        logger.debug("DELETE /line/v1/delete - %s" % http_code.NotAcceptable)
         message = {
             "error": "invalid DELETE request: JSON decode failed.",
-            "code": 406,
+            "code": http_code.NotAcceptable,
             "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
-        return message, 406
+        return message, http_code.NotAcceptable
 
     token = flask.request.headers.get("token", None)
     if (token not in util.session) or \
             (not conductor.user.is_admin_user(util.session[token])):
         message = {
             "error": "limited authority",
-            "code": 401,
+            "code": http_code.Unauthorized,
             "tips": util.get_tips_dict(10006)
         }
         message = json.dumps(message)
         logger.warn("delete subway line WARNING: limited authority.")
-        logger.debug("DELETE /line/v1/delete - 401")
-        return message, 401
+        logger.debug("DELETE /line/v1/delete - %s" % http_code.Unauthorized)
+        return message, http_code.Unauthorized
 
     uuid = data.get("uuid", None)
     logger.info("Begin to delete subway line %s." % uuid)
@@ -133,10 +133,10 @@ def delete_line():
 
     message = {
         "success": "delete subway line %s success." % uuid,
-        "code": 200
+        "code": http_code.OK
     }
     message = json.dumps(message)
-    return message, 200
+    return message, http_code.OK
 
 
 @line_blue.route("/modify/<context>", methods=["PUT"])
