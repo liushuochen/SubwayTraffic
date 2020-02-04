@@ -5,9 +5,34 @@ Development Time:   2020/01/04
 Developer:          LiuShuochen
                     jojoCry
 Effect:             The SubwayTraffic Platform system database driver.
+
+mysql> desc station;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| uuid      | char(27)    | NO   |     | NULL    |       |
+| name      | varchar(30) | NO   | PRI | NULL    |       |
+| next_stop | text        | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
 """
 
 import db.engine
+
+
+def init_station():
+    engine, cursor = db.engine.get_engine()
+    sql = """
+        create table if not exists station(
+        uuid      char(27) not null,
+        name      varchar(30),
+        next_stop text,
+        primary key(name)
+        ) charset utf8
+        """
+    cursor.execute(sql)
+    engine.close()
+    return
 
 
 def exist(value, types="name"):

@@ -11,6 +11,7 @@ import configparser
 import util
 import db.engine
 import db.line
+import db.station
 from logs.logger import LOG
 
 log_path = util.get_log_path()
@@ -46,10 +47,7 @@ def init():
 
     if "verify_code" not in tables:
         create_verify_code_table()
-
-    if "station" not in tables:
-        create_station_table()
-
+    db.station.init_station()
     lines = db.line.line_list()
     return lines
 

@@ -235,3 +235,7 @@ SubwayTraffic Platform v1.RC1.0.4.0.B060
     1、获取全部地铁站列表
     2、unlock用户适配中英文提示
     3、删除地铁线路适配http常量
+
+SubwayTraffic Platform v1.RC1.0.4.0.B070
+    1、修改station表，删除belong字段
+    2、优化station表初始化方式
