@@ -31,7 +31,7 @@ def after_request(resp):
 
 
 @line_blue.route("/add", methods=["POST"])
-def add_line():
+def add():
     try:
         data = json.loads(flask.request.data)
     except json.decoder.JSONDecodeError:
@@ -140,7 +140,7 @@ def delete():
 
 
 @line_blue.route("/modify/<context>", methods=["PUT"])
-def update_line(context):
+def update(context):
     try:
         data = json.loads(flask.request.data)
     except json.decoder.JSONDecodeError:
@@ -149,24 +149,24 @@ def update_line(context):
         logger.debug("PUT /line/v1/modify/%s - 406" % context)
         message = {
             "error": "invalid PUT request: JSON decode failed.",
-            "code": 406,
+            "code": http_code.NotAcceptable,
             "tips": util.get_tips_dict(10004)
         }
         message = json.dumps(message)
-        return message, 406
+        return message, http_code.NotAcceptable
 
     token = flask.request.headers.get("token", None)
     if (token not in util.session) or \
             (not conductor.user.is_admin_user(util.session[token])):
         message = {
             "error": "limited authority",
-            "code": 401,
+            "code": http_code.Unauthorized,
             "tips": util.get_tips_dict(10006)
         }
         message = json.dumps(message)
         logger.warn("update subway line WARNING: limited authority.")
         logger.debug("PUT /line/v1/modify/%s - 401" % context)
-        return message, 401
+        return message, http_code.Unauthorized
 
     if context == "name":
         uuid = data.get("uuid", None)
@@ -192,18 +192,18 @@ def update_line(context):
 
         message = {
             "success": "update subway line %s success." % uuid,
-            "code": 200
+            "code": http_code.OK
         }
         message = json.dumps(message)
-        return message, 200
+        return message, http_code.OK
     else:
         message = {
             "error": "unknown modify request - '%s'" % context,
-            "code": 404,
+            "code": http_code.NotFound,
             "tips": util.get_tips_dict(10007)
         }
         message = json.dumps(message)
-        return message, 404
+        return message, http_code.NotFound
 
 
 @line_blue.route("/list", methods=["GET"])

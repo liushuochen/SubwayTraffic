@@ -239,3 +239,4 @@ SubwayTraffic Platform v1.RC1.0.4.0.B060
 SubwayTraffic Platform v1.RC1.0.4.0.B070
     1、修改station表，删除belong字段
     2、优化station表初始化方式
+    3、修改地铁线路适配http常量
