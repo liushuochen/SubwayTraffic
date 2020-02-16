@@ -5,16 +5,6 @@ Development Time:   2020/01/04
 Developer:          LiuShuochen
                     jojoCry
 Effect:             The SubwayTraffic Platform system database driver.
-
-mysql> desc station;
-+-----------+-------------+------+-----+---------+-------+
-| Field     | Type        | Null | Key | Default | Extra |
-+-----------+-------------+------+-----+---------+-------+
-| uuid      | char(27)    | NO   |     | NULL    |       |
-| name      | varchar(30) | NO   | PRI | NULL    |       |
-| next_stop | text        | YES  |     | NULL    |       |
-+-----------+-------------+------+-----+---------+-------+
-
 """
 
 import db.engine

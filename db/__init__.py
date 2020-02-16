@@ -25,7 +25,6 @@ Admin = "admin"
 
 
 def init():
-    logger.info("init database...")
     platform_conf_path = util.get_root_path() + "/conf/platform.conf"
     database_conf_path = util.get_root_path() + "/conf/database.conf"
     deploy_conf = configparser.ConfigParser()
@@ -33,9 +32,7 @@ def init():
 
     # init database
     db_name = deploy_conf.get("deploy", "name")
-    databases = get_all_database()
-    if db_name not in databases:
-        init_database(db_name)
+    init_database(db_name)
 
     # init table
     tables = get_all_tables(db_name)
@@ -144,19 +141,10 @@ def get_all_tables(db_name):
 
 
 def init_database(name):
+    logger.info("init database...")
     engine, cursor = db.engine.base_engine()
-    sql = "create database %s charset utf8" % name
+    sql = "create database if not exists %s charset utf8" % name
     cursor.execute(sql)
     engine.close()
+    logger.info("setup database %s success." % name)
     return
-
-
-def get_all_database():
-    engine, cursor = db.engine.base_engine()
-    cursor.execute("show databases")
-    db_data = cursor.fetchall()
-    databases = []
-    for database_tuple in db_data:
-        databases.append(database_tuple[0])
-    engine.close()
-    return databases
