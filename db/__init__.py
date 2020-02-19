@@ -12,6 +12,7 @@ import util
 import db.engine
 import db.line
 import db.station
+import db.relation
 from logs.logger import LOG
 
 log_path = util.get_log_path()
@@ -45,6 +46,7 @@ def init():
     if "verify_code" not in tables:
         create_verify_code_table()
     db.station.init_station()
+    db.relation.init_relation()
     lines = db.line.line_list()
     return lines
 

@@ -61,6 +61,7 @@ def detail(uuid):
         "next_stop": data[2],
         "belong": data[3]
     }
+    engine.close()
     return station_detail
 
 
@@ -68,6 +69,7 @@ def delete(uuid):
     engine, cursor = db.engine.get_engine()
     sql = "delete from station where uuid='%s'" % uuid
     cursor.execute(sql)
+    engine.close()
     return
 
 
@@ -95,4 +97,5 @@ def get_list():
         else:
             each_detail["belong"] = station[3].split(",")
         station_list.append(each_detail)
+    engine.close()
     return station_list
