@@ -209,10 +209,10 @@ def update(context):
 @line_blue.route("/list", methods=["GET"])
 def line_list():
     lines = conductor.line.get_all_line()
-    message = {"line": lines, "code": 200}
+    message = {"line": lines, "code": http_code.OK}
     message = json.dumps(message)
-    logger.debug("GET /line/v1/list - 200")
-    return message, 200
+    logger.debug("GET /line/v1/list - %s" % http_code.OK)
+    return message, http_code.OK
 
 
 @line_blue.route("/detail/<uuid>", methods=["GET"])
@@ -232,8 +232,8 @@ def line_detail(uuid):
 
     message = {
         "line": detail,
-        "code": 200
+        "code": http_code.OK
     }
     message = json.dumps(message)
-    logger.debug("GET /line/v1/detail/%s - 200" % uuid)
-    return message, 200
+    logger.debug("GET /line/v1/detail/%s - %s" % (uuid, http_code.OK))
+    return message, http_code.OK
