@@ -8,6 +8,22 @@ Effect:             The SubwayTraffic Platform system database driver.
 """
 
 import db.engine
+from db import logger
+
+
+def init_line():
+    engine, cursor = db.engine.get_engine()
+    sql = """
+        create table if not exists subway_line(
+        uuid  char(27) not null,
+        name  varchar(10) not null,
+        primary key(name)
+        ) charset utf8
+        """
+    cursor.execute(sql)
+    engine.close()
+    logger.info("setup subway line finished.")
+    return
 
 
 def subway_list():

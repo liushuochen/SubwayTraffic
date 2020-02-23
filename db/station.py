@@ -8,6 +8,7 @@ Effect:             The SubwayTraffic Platform system database driver.
 """
 
 import db.engine
+from db import logger
 
 
 def init_station():
@@ -22,6 +23,7 @@ def init_station():
         """
     cursor.execute(sql)
     engine.close()
+    logger.info("Setup station finished.")
     return
 
 

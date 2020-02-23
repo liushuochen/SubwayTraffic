@@ -11,6 +11,49 @@ import util
 import db.engine
 from errors.HTTPcode import DBError
 from db import logger
+from configparser import ConfigParser
+
+
+def init_user():
+    engine, cursor = db.engine.get_engine()
+    sql = """
+        create table if not exists user(
+        uuid        char(27) not null,
+        email       varchar(30),
+        username    varchar(24) default "subway user",
+        password    varchar(18) not null,
+        token       char(10) not null,
+        user_type   enum("admin", "user") not null default "user",
+        create_time datetime not null,
+        status      enum("active", "down", "lock") not null default "active",
+        primary key(email)
+        ) charset utf8
+        """
+    cursor.execute(sql)
+    logger.info("Setup user finished.")
+
+    # add admin user
+    conf_path = util.get_root_path() + "/conf/platform.conf"
+    deploy_conf = ConfigParser()
+    deploy_conf.read([conf_path])
+    uuid = util.generate_uuid()
+    admin_user = deploy_conf.get("deploy", "admin_user")
+    admin_pwd = deploy_conf.get("deploy", "admin_pwd")
+    email = deploy_conf.get("deploy", "admin_email")
+    try:
+        get_user_detail(email)
+    except DBError:
+        now = util.get_time_string_format()
+        token = util.general_token()
+        user_type = "admin"
+        sql = "insert into user " \
+              "values(%s, %s, %s, %s, %s, %s, %s, default)"
+        val = (uuid, email, admin_user, admin_pwd, token, user_type, now)
+        cursor.execute(sql, val)
+        logger.info("Init default admin user success.")
+    engine.commit()
+    engine.close()
+    return
 
 
 def get_all_user_detail():

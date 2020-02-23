@@ -246,3 +246,6 @@ SubwayTraffic Platform v1.RC1.0.4.0.B080
     2、relation db层开发
     3、修复station db层若干函数中engine在结束调用后没有关闭的bug
     4、line api层适配http常量
+
+SubwayTraffic Platform v1.RC1.0.4.0.B090
+    1、数据库初始化性能优化

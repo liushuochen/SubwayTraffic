@@ -4,6 +4,7 @@
 # Date: 2020/2/19 - 01:18
 
 import db.engine
+from db import logger
 
 
 def init_relation():
@@ -19,6 +20,7 @@ def init_relation():
     """
     cursor.execute(sql)
     engine.close()
+    logger.info("Set up relation finished.")
     return
 
 
