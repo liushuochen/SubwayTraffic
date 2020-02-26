@@ -132,3 +132,20 @@ def get_tips_dict(stp_code):
         "stp_code": stp_code
     }
     return tips
+
+
+def get_rsa_path():
+    conf_path = get_root_path() + "/conf/platform.conf"
+    conf = configparser.ConfigParser()
+    conf.read(conf_path)
+    rsa_path = conf.get("system", "rsa_path")
+    rsa_path += "/rsa.conf"
+    return rsa_path
+
+
+def get_storage_detail(rsa_path):
+    conf = configparser.ConfigParser()
+    conf.read(rsa_path)
+    server = conf.get("storage", "server")
+    password = conf.get("storage", "pwd")
+    return server, password

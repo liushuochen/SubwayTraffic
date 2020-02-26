@@ -17,6 +17,7 @@ import server_init
 import util
 import compute
 from api import logger
+from errors.service import StartException
 
 conf = configparser.ConfigParser()
 config_path = util.get_root_path() + "/conf/platform.conf"
@@ -66,7 +67,11 @@ def init():
 
 
 if __name__ == '__main__':
-    init()
+    try:
+        init()
+    except StartException as e:
+        print(str(e))
+        exit(1)
 
     logger.info("=" * 23)
     logger.info("Service starting....")
