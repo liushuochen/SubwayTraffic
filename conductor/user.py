@@ -71,15 +71,20 @@ def destroy(uuid):
 
 
 def user_detail(uuid):
-    user_list = db.user.get_all_user_detail()
-    for user_message in user_list:
-        if user_message["uuid"] == uuid:
-            target_user = user_message
-            break
-    else:
+    try:
+        data = db.user.get_user_detail_by_uuid(uuid)
+    except DBError:
         raise STPHTTPException("can not find user %s" % uuid, 404, 10108)
 
-    return target_user
+    details = {
+        "uuid": data[0],
+        "email": data[1],
+        "username": data[2],
+        "type": data[5],
+        "create_time": util.get_time_string_format(time_data=data[6]),
+        "status": data[7]
+    }
+    return details
 
 
 def update(**kwargs):

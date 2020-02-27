@@ -24,19 +24,13 @@ logger = LOG(
 
 process_stack = ProStack()
 process_queue = Queue()
-storage_server = ""
-storage_server_pwd = ""
 
 
 def init():
     process_stack.push(os.getpid())
-
-    global storage_server
-    global storage_server_pwd
     try:
-        storage_server, storage_server_pwd = \
-            util.get_storage_detail(util.get_rsa_path())
+        _, _ = util.get_storage_detail(util.get_rsa_path())
     except NoSectionError:
         raise StartException("can not find rsa config file.")
-
     return
+

@@ -193,7 +193,7 @@ def delete_user():
 
 
 @user_blue.route("/modify", methods=["PUT"])
-def update_user():
+def update():
     try:
         data = json.loads(flask.request.data)
         uuid = data.get("uuid", None)
@@ -406,3 +406,34 @@ def is_live():
     }
     message = json.dumps(message)
     return message, 200
+
+
+@user_blue.route("/detail", methods=["GET"])
+def detail():
+    try:
+        token = flask.request.headers.get("token", None)
+        if token not in util.session:
+            message = {
+                "error": "limited authority",
+                "code": 401,
+                "tips": util.get_tips_dict(10006)
+            }
+            message = json.dumps(message)
+            logger.debug("GET /user/v1/detail - 401")
+            return message, 401
+
+        uuid = util.session[token]
+        user_detail = conductor.user.user_detail(uuid)
+    except STPHTTPException as e:
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
+        message = json.dumps(message)
+        logger.debug("GET /user/v1/detail - %s" % e.httpcode)
+        logger.error("Get user detail ERROR:\n %s" % traceback.format_exc())
+        return message, e.httpcode
+
+    user_detail = json.dumps(user_detail)
+    return user_detail, 200

@@ -26,6 +26,7 @@ def init_user():
         user_type   enum("admin", "user") not null default "user",
         create_time datetime not null,
         status      enum("active", "down", "lock") not null default "active",
+        image       varchar(100),
         primary key(email)
         ) charset utf8
         """
@@ -40,6 +41,7 @@ def init_user():
     admin_user = deploy_conf.get("deploy", "admin_user")
     admin_pwd = deploy_conf.get("deploy", "admin_pwd")
     email = deploy_conf.get("deploy", "admin_email")
+    image = "/root/image/localhost/default.jpeg"
     try:
         get_user_detail(email)
     except DBError:
@@ -47,8 +49,8 @@ def init_user():
         token = util.general_token()
         user_type = "admin"
         sql = "insert into user " \
-              "values(%s, %s, %s, %s, %s, %s, %s, default)"
-        val = (uuid, email, admin_user, admin_pwd, token, user_type, now)
+              "values(%s, %s, %s, %s, %s, %s, %s, default, %s)"
+        val = (uuid, email, admin_user, admin_pwd, token, user_type, now, image)
         cursor.execute(sql, val)
         logger.info("Init default admin user success.")
     engine.commit()
@@ -91,6 +93,19 @@ def get_user_detail(email):
     return user_details
 
 
+def get_user_detail_by_uuid(uuid):
+    engine, cursor = db.engine.get_engine()
+    sql = "select * from user where uuid='%s'" % uuid
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    if not data:
+        logger.error("can not find user %s" % uuid)
+        raise DBError("can not find user %s" % uuid, 404)
+    detail = data[0]
+    engine.close()
+    return detail
+
+
 # if username is a invalid username, update_token can not raise any errors
 def update_token(email, token):
     engine, cursor = db.engine.get_engine()
@@ -125,8 +140,9 @@ def add_user(**kwargs):
     uuid = kwargs["uuid"]
     email = kwargs["email"]
     user_type = kwargs["user_type"]
-    sql = "insert into user values(%s, %s, %s, %s, %s, %s, %s, default)"
-    val = (uuid, email, username, password, token, user_type, create_time)
+    image = "/root/image/localhost/default.jpeg"
+    sql = "insert into user values(%s, %s, %s, %s, %s, %s, %s, default, %s)"
+    val = (uuid, email, username, password, token, user_type, create_time, image)
     cursor.execute(sql, val)
     engine.commit()
     engine.close()

@@ -250,3 +250,4 @@ SubwayTraffic Platform v1.RC1.0.4.0.B080
 SubwayTraffic Platform v1.RC1.0.4.0.B090
     1、数据库初始化性能优化
     2、定义存储服务器配置信息
+    3、用户详情功能开发
