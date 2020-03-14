@@ -213,3 +213,13 @@ def unlock(uuid):
     engine.commit()
     engine.close()
     return
+
+
+def update_photo(uuid, url):
+    engine, cursor = db.engine.get_engine()
+    sql = "update user set image='%s' where uuid='%s'" % \
+          (url, uuid)
+    cursor.execute(sql)
+    engine.commit()
+    engine.close()
+    return

@@ -437,3 +437,50 @@ def detail():
 
     user_detail = json.dumps(user_detail)
     return user_detail, 200
+
+
+@user_blue.route("/upload/photo", methods=["POST"])
+def upload_photo():
+    token = flask.request.headers.get("token", None)
+    if (token is None) or (token not in util.session):
+        message = {
+            "error": "limited authority",
+            "code": 401,
+            "tips": util.get_tips_dict(10006)
+        }
+        message = json.dumps(message)
+        logger.debug("POST /user/v1/upload/photo - 401")
+        return message, 401
+    file = flask.request.files["photo"]
+    filename = file.filename
+    format = filename.rsplit(".", 1)[1]
+    if format not in ["jpg", "jpeg", "png"]:
+        message = {
+            "error": "format not allowed",
+            "code": 400,
+            "tips": util.get_tips_dict(10112)
+        }
+        message = json.dumps(message)
+        logger.debug("POST /user/v1/upload/photo - 400")
+        logger.error("BadRequest: upload photo failed: unsupported photo format %s" % format)
+        return message, 400
+
+    uuid = util.session[token]
+    try:
+        conductor.user.save_photo(uuid, format, file)
+    except STPHTTPException as e:
+        message = {
+            "error": e.error_message,
+            "code": e.httpcode,
+            "tips": e.tip
+        }
+        message = json.dumps(message)
+        logger.debug("POST /user/v1/upload/photo - %s" % e.httpcode)
+        return message, e.httpcode
+
+    logger.debug("POST /user/v1/upload/photo - 200")
+    message = {
+        "success": "upload photo finished"
+    }
+    message = json.dumps(message)
+    return message, 200

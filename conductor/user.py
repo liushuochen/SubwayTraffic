@@ -82,7 +82,8 @@ def user_detail(uuid):
         "username": data[2],
         "type": data[5],
         "create_time": util.get_time_string_format(time_data=data[6]),
-        "status": data[7]
+        "status": data[7],
+        "image": data[8]
     }
     return details
 
@@ -191,4 +192,17 @@ def unlock(uuid):
     if locked_user["status"] == "down":
         raise STPHTTPException("can not unlock down user %s." % uuid, 403, 10110)
     db.user.unlock(uuid)
+    return
+
+
+def save_photo(uuid, format, file):
+    try:
+        db.user.get_user_detail_by_uuid(uuid)
+    except DBError:
+        raise STPHTTPException("can not find user %s" % uuid, 404, 10108)
+
+    url = util.get_user_photo_root_path() + "/" + uuid + "." + format
+    file.save(url)
+
+    db.user.update_photo(uuid, url)
     return
